@@ -8,6 +8,7 @@ keywords = ["kucoin", "cyptocurrency", "trading", "algotrading", "async"]
 homepage="https://github.com/esvwdev/kucoin_rs"
 repository="https://github.com/escwdev/kucoin_rs"
 documentation = "https://docs.rs/crate/kucoin_rs"
+license = "MIT"
 readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
