@@ -203,7 +203,8 @@ impl Kucoin {
     pub async fn ws_bullet_private(&self) -> Result<APIDatum<InstanceServers>, APIError> {
         let endpoint = String::from("/api/v1/bullet-private");
         let url: String = format!("{}{}", &self.prefix, endpoint);
-        let resp = self.post(url, None, None).await?;
+        let header: header::HeaderMap = self.sign_headers(endpoint, None, None, Method::POST).unwrap();
+        let resp = self.post(url, Some(header), None).await?;
         let api_data: APIDatum<InstanceServers> = resp.json().await?;
         Ok(api_data)
     }
