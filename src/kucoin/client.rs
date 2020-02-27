@@ -23,11 +23,11 @@ pub struct Credentials {
 }
 
 impl Credentials {
-    pub fn new(api_key: String, secret_key: String, passphrase: String) -> Self {
+    pub fn new(api_key: &str, secret_key: &str, passphrase: &str) -> Self {
         Credentials{
-            api_key,
-            secret_key,
-            passphrase,
+            api_key: api_key.to_string(),
+            secret_key: secret_key.to_string(),
+            passphrase: passphrase.to_string(),
         }
     }
 }

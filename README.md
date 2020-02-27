@@ -34,9 +34,9 @@ header construction but does require that the client is initialized with credent
 use kucoin_rs::kucoin::client::{Kucoin, Credentials, KucoinEnv};
 
 let credentials = Credentials::new(
-        "xxxxxxxxxxxxxXXXXXXxxx".to_string(),           // API KEY
-        "XXxxxxx-xxxxxx-xXxxxx-xxxx".to_string(),       // SECRET KEY
-        "xxxxxx".to_string()                            // PASSPHRASE
+        "xxxxxxxxxxxxxXXXXXXxxx",           // API KEY
+        "XXxxxxx-xxxxxx-xXxxxx-xxxx",       // SECRET KEY
+        "xxxxxx"                            // PASSPHRASE
     );
 
 let api = Kucoin::new(KucoinEnv::Live, Some(credentials));

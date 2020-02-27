@@ -45,9 +45,9 @@
 //! use kucoin_rs::kucoin::client::{Kucoin, Credentials, KucoinEnv};
 //! 
 //! let credentials = Credentials::new(
-//!         "xxxxxxxxxxxxxXXXXXXxxx".to_string(),           // API KEY
-//!         "XXxxxxx-xxxxxx-xXxxxx-xxxx".to_string(),       // SECRET KEY
-//!         "xxxxxx".to_string()                            // PASSPHRASE
+//!         "xxxxxxxxxxxxxXXXXXXxxx",           // API KEY
+//!         "XXxxxxx-xxxxxx-xXxxxx-xxxx",       // SECRET KEY
+//!         "xxxxxx"                            // PASSPHRASE
 //!     );
 //! 
 //! let api = Kucoin::new(KucoinEnv::Live, Some(credentials));
@@ -146,9 +146,9 @@
 //! async fn main() -> Result<(), failure::Error>  {
 //!     // If credentials are needed, generate a new Credentials struct w/ the necessary keys
 //!     let credentials = Credentials::new(
-//!         "xxxxxxxxxxxxxXXXXXXxxx".to_string(), 
-//!         "XXxxxxx-xxxxxx-xXxxxx-xxxx".to_string(), 
-//!         "xxxxxx".to_string()
+//!         "xxxxxxxxxxxxxXXXXXXxxx", 
+//!         "XXxxxxx-xxxxxx-xXxxxx-xxxx" 
+//!         "xxxxxx"
 //!     );
 //! 
 //!     // Initialize the Kucoin API struct
