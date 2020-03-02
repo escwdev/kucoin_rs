@@ -74,7 +74,6 @@ impl Kucoin {
                 if resp.status().is_success() {
                     Ok(resp)
                 } else {
-                    println!("HTTP Error Status Code: {:?}", resp.status());
                     Ok(resp)
                 }
             },
@@ -83,7 +82,6 @@ impl Kucoin {
                 if resp.status().is_success() {
                     Ok(resp)
                 } else {
-                    println!("HTTP Error Status Code: {:?}", resp.status());
                     Ok(resp)
                 }
             }
@@ -106,7 +104,6 @@ impl Kucoin {
                 if resp.status().is_success() {
                     Ok(resp)
                 } else {
-                    println!("HTTP Error Status Code: {:?}", resp.status());
                     Ok(resp)
                 }
             } else {
@@ -117,10 +114,8 @@ impl Kucoin {
                  if resp.status().is_success() {
                     Ok(resp)
                 } else if resp.status().is_server_error() {
-                    println!("server error!");
                     Ok(resp)
                 } else {
-                    println!("HTTP Error Status Code: {:?}", resp.status());
                     Ok(resp)
                 }
             }
@@ -142,10 +137,8 @@ impl Kucoin {
             if resp.status().is_success() {
                 Ok(resp)
             } else if resp.status().is_server_error() {
-                println!("server error!");
                 Ok(resp)
             } else {
-                println!("HTTP Error Status Code: {:?}", resp.status());
                 Ok(resp)
             }
         } else {

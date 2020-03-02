@@ -75,7 +75,6 @@ impl KucoinWebsocket {
         
         for topic in ws_topic.iter() {
             let sub = Subscribe::new(topic);
-            println!("Websocket subscribing to {}", &sub.topic);
         
             sink_mutex.lock()
                 .await
@@ -118,7 +117,6 @@ impl KucoinWebsocket {
 
     pub fn unsubscribe(&mut self, ws_topic: WSTopic) -> Option<StoredStream> {
         let streams = Pin::new(&mut self.streams);
-        println!("Unsubscribing from: {:?}", ws_topic);
         self.subscriptions
             .get(&ws_topic)
             .and_then(|token| StreamUnordered::take(streams, *token))
@@ -191,7 +189,6 @@ fn parse_message(msg: Message) -> Result<KucoinWebsocketMsg, APIError> {
 
 pub async fn close_socket(heartbeat: &mut tokio::task::JoinHandle<()>) -> Result<(), failure::Error> {
     heartbeat.await?;
-    println!("Heartbeat turned off...");
     Ok(())
 }
 
