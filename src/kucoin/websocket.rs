@@ -39,7 +39,6 @@ pub type StoredStream = SplitStream<WSStream>;
 pub struct KucoinWebsocket {
     subscriptions: HashMap<WSTopic, usize>,
     tokens: HashMap<usize, WSTopic>,
-    heartbeats: HashMap<usize, tokio::task::JoinHandle<()>>,
     #[pin]
     streams: StreamUnordered<StoredStream>,
 }
@@ -83,7 +82,7 @@ impl KucoinWebsocket {
         }
 
         // Ping heartbeat
-        let heartbeat = tokio::spawn(async move {
+        tokio::spawn(async move {
             loop {
                 time::delay_for(Duration::from_secs(30)).await;
                 let ping = DefaultMsg {
@@ -99,16 +98,16 @@ impl KucoinWebsocket {
                 if let Err(e) = resp { 
                     match e {
                         APIError::Websocket(e) => {
-                            eprintln!("Error sending Ping: {}", e);
-                            break
-                        }
-                        _ => eprintln!("None websocket error sending Ping: {}", e),
-                    }
+                            format_err!("Error sending Ping: {}", e);
+                            break;
+                        },
+                        _ => format_err!("None websocket error sending Ping: {}", e),
+                    };
                 };
             }
         });
+
         let token = self.streams.push(read);
-        self.heartbeats.insert(token, heartbeat);
         self.subscriptions.insert(ws_topic[0].clone(), token);
         self.tokens.insert(token, ws_topic[0].clone());
 

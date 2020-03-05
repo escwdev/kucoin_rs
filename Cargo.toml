@@ -1,6 +1,6 @@
 [package]
 name = "kucoin_rs"
-version = "0.1.3"
+version = "0.1.4"
 authors = ["Eric Abrahams <eric@halgo.ca>"]
 edition = "2018"
 description = "Rust async library for the Kucoin API"
@@ -23,7 +23,7 @@ futures = "0.3.4"
 pin-project = "0.4"
 streamunordered = "0.5"
 url = "2.1.1"
-failure = "0.1.6"
+failure = "0.1.7"
 hmac = "0.7.1"
 sha2 = "0.8.1"
 base64 = "0.11.0"
