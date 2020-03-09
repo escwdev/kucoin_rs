@@ -1,6 +1,6 @@
 [package]
 name = "kucoin_rs"
-version = "0.1.5"
+version = "0.1.6"
 authors = ["Eric Abrahams <eric@halgo.ca>"]
 edition = "2018"
 description = "Rust async library for the Kucoin API"
@@ -14,7 +14,7 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-reqwest = { version = "0.10", features = ["json", "rustls"] }
+reqwest = { version = "0.10.4", features = ["json", "rustls-tls"] }
 tokio = { version = "0.2.13", features = ["full"] }
 tokio-tls = "0.3.0"
 tokio-tungstenite = { version = "0.10.1", features = ["tls"] }
