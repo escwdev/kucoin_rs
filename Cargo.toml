@@ -1,6 +1,6 @@
 [package]
 name = "kucoin_rs"
-version = "0.1.6"
+version = "0.2.0"
 authors = ["Eric Abrahams <eric@halgo.ca>"]
 edition = "2018"
 description = "Rust async library for the Kucoin API"

@@ -83,7 +83,7 @@
 //! 
 //! #[tokio::main]
 //! async fn main() -> Result<(), failure::Error>  {
-//!     let api = Kucoin::new(KucoinEnv::Sandbox, None);
+//!     let api = Kucoin::new(KucoinEnv::Sandbox, None)?;
 //!     let result = api.get_ticker("BTC-USDT").await?;
 //!     match result.data {
 //!         Some(d) => println!("{:#?}", d),
@@ -152,7 +152,7 @@
 //!     );
 //! 
 //!     // Initialize the Kucoin API struct
-//!     let api = Kucoin::new(KucoinEnv::Live, Some(credentials));
+//!     let api = Kucoin::new(KucoinEnv::Live, Some(credentials))?;
 //!     
 //!     // Generate the dynamic Public or Private websocket url and endpoint from Kucoin 
 //!     // which includes a token required for connecting

@@ -47,18 +47,20 @@ pub struct Kucoin {
 }
 
 impl Kucoin {
-    pub fn new(environment: KucoinEnv, credentials: Option<Credentials>) -> Self {
-        let client = reqwest::Client::new();
+    pub fn new(environment: KucoinEnv, credentials: Option<Credentials>) -> Result<Self, failure::Error> {
+        let client = reqwest::Client::builder()
+            .use_rustls_tls()
+            .build()?;
         let prefix = match environment {
             KucoinEnv::Live => String::from("https://api.kucoin.com"),
             KucoinEnv::Sandbox => String::from("https://openapi-sandbox.kucoin.com"),
         };
-        Kucoin {
+        Ok(Kucoin {
             credentials,
             environment,
             prefix,
             client,
-        }
+        })
     }
 
     // Generic get request for internal library use.
