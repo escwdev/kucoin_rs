@@ -52,7 +52,7 @@ impl Kucoin {
             .use_rustls_tls()
             .build()?;
         let prefix = match environment {
-            KucoinEnv::Live => String::from("https://api.kucoin.com"),
+            KucoinEnv::Live => String::from("https://openapi-v2.kucoin.com"),
             KucoinEnv::Sandbox => String::from("https://openapi-sandbox.kucoin.com"),
         };
         Ok(Kucoin {
