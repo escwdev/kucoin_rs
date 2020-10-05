@@ -151,6 +151,16 @@ fn parse_message(msg: Message) -> Result<KucoinWebsocketMsg, APIError> {
                 Ok(KucoinWebsocketMsg::Level3MatchMsg(serde_json::from_str(&msg)?))
             } else if msg.contains("\"subject\":\"trade.l3change\"") {
                 Ok(KucoinWebsocketMsg::Level3ChangeMsg(serde_json::from_str(&msg)?))
+            } else if msg.contains("\"subject\":\"received\"") {
+                Ok(KucoinWebsocketMsg::FullMatchReceivedMsg(serde_json::from_str(&msg)?))
+            } else if msg.contains("\"subject\":\"open\"") {
+                Ok(KucoinWebsocketMsg::FullMatchOpenMsg(serde_json::from_str(&msg)?))
+            } else if msg.contains("\"subject\":\"done\"") {
+                Ok(KucoinWebsocketMsg::FullMatchDoneMsg(serde_json::from_str(&msg)?))
+            } else if msg.contains("\"subject\":\"match\"") {
+                Ok(KucoinWebsocketMsg::FullMatchMatchMsg(serde_json::from_str(&msg)?))
+            } else if msg.contains("\"subject\":\"change\"") {
+                Ok(KucoinWebsocketMsg::FullMatchChangeMsg(serde_json::from_str(&msg)?))
             } else if msg.contains("/indicator/index:") {
                 Ok(KucoinWebsocketMsg::IndexPriceMsg(serde_json::from_str(&msg)?))
             } else if msg.contains("/indicator/markPrice:") {
@@ -267,6 +277,7 @@ impl Subscribe {
             WSTopic::OrderBookChange(ref symbols) => format!("/margin/fundingBook:{}", symbols.join(",")),
             WSTopic::Match(ref symbols) => format!("/market/match:{}", symbols.join(",")),
             WSTopic::Level3Public(ref symbols) => format!("/market/level3:{}", symbols.join(",")),
+            WSTopic::FullMatch(ref symbols) => format!("/spotMarket/level3:{}", symbols.join(",")),
             WSTopic::Level3Private(ref symbols) => {
                 private_channel = true;
                 format!("/market/level3:{}", symbols.join(",")) 

@@ -24,6 +24,7 @@ pub enum WSTopic {
     Snapshot(String),
     OrderBook(Vec<String>),
     Match(Vec<String>),
+    FullMatch(Vec<String>),
     Level3Public(Vec<String>),
     Level3Private(Vec<String>),
     IndexPrice(Vec<String>),
@@ -62,6 +63,11 @@ pub enum KucoinWebsocketMsg {
     Level3MatchMsg(WSResp<Level3Match>),
     Level3DoneMsg(WSResp<Level3Done>),
     Level3ChangeMsg(WSResp<Level3Change>),
+    FullMatchReceivedMsg(WSResp<FullMatchReceived>),
+    FullMatchOpenMsg(WSResp<FullMatchOpen>),
+    FullMatchDoneMsg(WSResp<FullMatchDone>),
+    FullMatchMatchMsg(WSResp<FullMatchMatch>),
+    FullMatchChangeMsg(WSResp<FullMatchChange>),
     IndexPriceMsg(WSResp<IndexPrice>),
     MarketPriceMsg(WSResp<MarketPrice>),
     OrderBookChangeMsg(WSResp<BookChange>),
@@ -250,6 +256,62 @@ pub struct Level3Change {
     pub old_size: String,
 }
 
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FullMatchReceived {
+    pub sequence: i64,
+    pub symbol: String,
+    pub order_id: String,
+    pub client_oid: Option<String>,
+    pub ts: i64,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FullMatchOpen {
+    pub sequence: i64,
+    pub symbol: String,
+    pub order_id: String,
+    pub side: String,
+    pub price: String,
+    pub size: String,
+    pub order_time: i64,
+    pub ts: i64,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FullMatchDone {
+    pub sequence: i64,
+    pub symbol: String,
+    pub order_id: String,
+    pub reason: String,
+    pub ts: i64,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FullMatchMatch {
+    pub sequence: i64,
+    pub symbol: String,
+    pub side: String,
+    pub price: String,
+    pub remain_size: String,
+    pub taker_order_id: String,
+    pub maker_order_id: String,
+    pub trade_id: String,
+    pub ts: i64,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FullMatchChange {
+    pub sequence: i64,
+    pub symbol: String,
+    pub size: String,
+    pub order_id: String,
+    pub ts: i64,
+}
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
