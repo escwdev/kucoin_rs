@@ -34,6 +34,7 @@ pub enum WSTopic {
     DebtRatio,
     PositionChange,
     MarginTradeOrder(String),
+    TradeOrders
 }
 
 pub enum WSType {
@@ -71,6 +72,11 @@ pub enum KucoinWebsocketMsg {
     MarginTradeOpenMsg(WSResp<MarginTradeOpen>),
     MarginTradeUpdateMsg(WSResp<MarginTradeUpdate>),
     MarginTradeDoneMsg(WSResp<MarginTradeDone>),
+    TradeOpenMsg(WSResp<TradeOpen>),
+    TradeMatchMsg(WSResp<TradeMatch>),
+    TradeFilledMsg(WSResp<TradeFilled>),
+    TradeCanceledMsg(WSResp<TradeCanceled>),
+    TradeUpdateMsg(WSResp<TradeUpdate>),
     Error(String),
 }
 
@@ -353,5 +359,100 @@ pub struct MarginTradeDone {
     pub order_id: String,
     pub reason: String,
     pub side: String,
+    pub ts: i64,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TradeOpen {
+    pub symbol: String,
+    pub order_type: String,
+    pub side: String,
+    pub r#type: String,
+    pub order_id: String,
+    pub order_time: i64,
+    pub size: String,
+    pub filled_size: String,
+    pub price: String,
+    pub client_oid: String,
+    pub remain_size: String,
+    pub status: String,
+    pub ts: i64,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TradeMatch {
+    pub symbol: String,
+    pub order_type: String,
+    pub side: String,
+    pub liquidity: String,
+    pub r#type: String,
+    pub order_id: String,
+    pub order_time: i64,
+    pub size: String,
+    pub filled_size: String,
+    pub price: String,
+    pub match_price: String,
+    pub match_size: String,
+    pub trade_id: String,
+    pub client_oid: String,
+    pub remain_size: String,
+    pub status: String,
+    pub ts: i64,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TradeFilled {
+    pub symbol: String,
+    pub order_type: String,
+    pub side: String,
+    pub r#type: String,
+    pub order_id: String,
+    pub order_time: i64,
+    pub size: String,
+    pub filled_size: String,
+    pub price: String,
+    pub client_oid: String,
+    pub remain_size: String,
+    pub status: String,
+    pub ts: i64,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TradeCanceled {
+    pub symbol: String,
+    pub order_type: String,
+    pub side: String,
+    pub r#type: String,
+    pub order_id: String,
+    pub order_time: i64,
+    pub size: String,
+    pub filled_size: String,
+    pub price: String,
+    pub client_oid: String,
+    pub remain_size: String,
+    pub status: String,
+    pub ts: i64,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TradeUpdate {
+    pub symbol: String,
+    pub order_type: String,
+    pub side: String,
+    pub r#type: String,
+    pub old_size: String,
+    pub order_id: String,
+    pub order_time: i64,
+    pub size: String,
+    pub filled_size: String,
+    pub price: String,
+    pub client_oid: String,
+    pub remain_size: String,
+    pub status: String,
     pub ts: i64,
 }

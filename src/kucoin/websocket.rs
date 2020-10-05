@@ -173,6 +173,20 @@ fn parse_message(msg: Message) -> Result<KucoinWebsocketMsg, APIError> {
                 Ok(KucoinWebsocketMsg::MarginTradeDoneMsg(serde_json::from_str(&msg)?))
             } else if msg.contains("error") {
                 Ok(KucoinWebsocketMsg::Error(msg))
+            } else if msg.contains("\"topic\":\"/spotMarket/tradeOrders\"") {
+                if msg.contains("\"type\":\"open\"") {
+                    Ok(KucoinWebsocketMsg::TradeOpenMsg(serde_json::from_str(&msg)?))
+                } else if msg.contains("\"type\":\"match\"") {
+                    Ok(KucoinWebsocketMsg::TradeMatchMsg(serde_json::from_str(&msg)?))
+                } else if msg.contains("\"type\":\"filled\"") {
+                    Ok(KucoinWebsocketMsg::TradeFilledMsg(serde_json::from_str(&msg)?))
+                } else if msg.contains("\"type\":\"canceled\"") {
+                    Ok(KucoinWebsocketMsg::TradeCanceledMsg(serde_json::from_str(&msg)?))
+                } else if msg.contains("\"type\":\"update\"") {
+                    Ok(KucoinWebsocketMsg::TradeUpdateMsg(serde_json::from_str(&msg)?))
+                } else {
+                    serde::export::Err(APIError::Other("No KucoinWebSocketMsg type to parse".to_string()))
+                }
             } else {
                 serde::export::Err(APIError::Other("No KucoinWebSocketMsg type to parse".to_string()))
             }
@@ -276,7 +290,11 @@ impl Subscribe {
             WSTopic::MarginTradeOrder(ref symbol) => {
                 private_channel = true;
                 format!("/margin/loan:{}", symbol)
-            },  
+            },
+            WSTopic::TradeOrders => {
+                private_channel = true;
+                String::from("/spotMarket/tradeOrders")
+            }  
         };
 
         Subscribe {
