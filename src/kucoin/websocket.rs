@@ -159,7 +159,7 @@ fn parse_message(msg: Message) -> Result<KucoinWebsocketMsg, APIError> {
                 Ok(KucoinWebsocketMsg::FullMatchDoneMsg(serde_json::from_str(&msg)?))
             } else if msg.contains("\"subject\":\"match\"") {
                 Ok(KucoinWebsocketMsg::FullMatchMatchMsg(serde_json::from_str(&msg)?))
-            } else if msg.contains("\"subject\":\"change\"") {
+            } else if msg.contains("\"subject\":\"update\"") {
                 Ok(KucoinWebsocketMsg::FullMatchChangeMsg(serde_json::from_str(&msg)?))
             } else if msg.contains("/indicator/index:") {
                 Ok(KucoinWebsocketMsg::IndexPriceMsg(serde_json::from_str(&msg)?))
