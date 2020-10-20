@@ -12,6 +12,13 @@ pub struct CancelResp {
 
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
+pub struct CancelByClientOidResp {
+    pub cancelled_order_id: String,
+    pub client_oid: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct OrderInfo {
     pub id: String,
     pub symbol: String,

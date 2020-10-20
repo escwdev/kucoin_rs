@@ -7,7 +7,8 @@ use super::error::APIError;
 use super::model::{APIData, APIDatum, Method, Pagination};
 use super::model::trade::{
     OrderResp, 
-    CancelResp, 
+    CancelResp,
+    CancelByClientOidResp, 
     OrderInfo,
     HistoricalOrder,
     FillsInfo,
@@ -84,6 +85,17 @@ impl Kucoin {
     /// Cancels an order based on the provided order id (required).
     pub async fn cancel_order(&self, order_id: &str) -> Result<APIDatum<CancelResp>, APIError> {
         let endpoint = format!("/api/v1/orders/{}", order_id);
+        let url = format!("{}{}", &self.prefix, endpoint);
+        let headers: header::HeaderMap = self.sign_headers(endpoint, None, None, Method::DELETE).unwrap();
+        let resp = self.delete(url, Some(headers)).await?
+            .json()
+            .await?;
+        Ok(resp)
+    }
+
+    /// Cancels an order based on the provided order id (required).
+    pub async fn cancel_order_by_client_oid(&self, client_oid: &str) -> Result<APIDatum<CancelByClientOidResp>, APIError> {
+        let endpoint = format!("/api/v1/client-order/{}", client_oid);
         let url = format!("{}{}", &self.prefix, endpoint);
         let headers: header::HeaderMap = self.sign_headers(endpoint, None, None, Method::DELETE).unwrap();
         let resp = self.delete(url, Some(headers)).await?
