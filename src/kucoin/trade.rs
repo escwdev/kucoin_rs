@@ -95,7 +95,7 @@ impl Kucoin {
 
     /// Cancels an order based on the provided order id (required).
     pub async fn cancel_order_by_client_oid(&self, client_oid: &str) -> Result<APIDatum<CancelByClientOidResp>, APIError> {
-        let endpoint = format!("/api/v1/client-order/{}", client_oid);
+        let endpoint = format!("/api/v1/order/client-order/{}", client_oid);
         let url = format!("{}{}", &self.prefix, endpoint);
         let headers: header::HeaderMap = self.sign_headers(endpoint, None, None, Method::DELETE).unwrap();
         let resp = self.delete(url, Some(headers)).await?
