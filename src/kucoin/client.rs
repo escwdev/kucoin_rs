@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::time::Duration;
 use reqwest;
 
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
@@ -50,6 +51,7 @@ impl Kucoin {
     pub fn new(environment: KucoinEnv, credentials: Option<Credentials>) -> Result<Self, failure::Error> {
         let client = reqwest::Client::builder()
             .use_rustls_tls()
+            .timeout(Duration::from_secs(60))
             .build()?;
         let prefix = match environment {
             KucoinEnv::Live => String::from("https://openapi-v2.kucoin.com"),
