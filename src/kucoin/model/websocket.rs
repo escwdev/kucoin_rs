@@ -35,7 +35,7 @@ pub enum WSTopic {
     DebtRatio,
     PositionChange,
     MarginTradeOrder(String),
-    TradeOrders
+    TradeOrders,
 }
 
 pub enum WSType {
@@ -112,7 +112,6 @@ pub struct Subscribe {
     pub response: bool,
 }
 
-
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SymbolTicker {
@@ -184,7 +183,7 @@ pub struct Match {
     pub time: String,
     pub r#type: String,
     pub maker_order_id: String,
-    pub trade_id: String
+    pub trade_id: String,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -355,7 +354,7 @@ pub struct StopOrder {
     pub funds: String,
     pub time: String,
     pub r#type: String,
-    pub reason: Option<String>
+    pub reason: Option<String>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -436,6 +435,7 @@ pub struct TradeOpen {
     pub size: String,
     pub filled_size: String,
     pub price: String,
+    #[serde(default)]
     pub client_oid: String,
     pub remain_size: String,
     pub status: String,
@@ -458,6 +458,7 @@ pub struct TradeMatch {
     pub match_price: String,
     pub match_size: String,
     pub trade_id: String,
+    #[serde(default)]
     pub client_oid: String,
     pub remain_size: String,
     pub status: String,
@@ -476,6 +477,7 @@ pub struct TradeFilled {
     pub size: String,
     pub filled_size: String,
     pub price: String,
+    #[serde(default)]
     pub client_oid: String,
     pub remain_size: String,
     pub status: String,
@@ -494,6 +496,7 @@ pub struct TradeCanceled {
     pub size: String,
     pub filled_size: String,
     pub price: String,
+    #[serde(default)]
     pub client_oid: String,
     pub remain_size: String,
     pub status: String,
@@ -513,6 +516,7 @@ pub struct TradeUpdate {
     pub size: String,
     pub filled_size: String,
     pub price: String,
+    #[serde(default)]
     pub client_oid: String,
     pub remain_size: String,
     pub status: String,
