@@ -147,7 +147,7 @@
 //!     // If credentials are needed, generate a new Credentials struct w/ the necessary keys
 //!     let credentials = Credentials::new(
 //!         "xxxxxxxxxxxxxXXXXXXxxx", 
-//!         "XXxxxxx-xxxxxx-xXxxxx-xxxx" 
+//!         "XXxxxxx-xxxxxx-xXxxxx-xxxx",
 //!         "xxxxxx"
 //!     );
 //! 
