@@ -1,31 +1,26 @@
+use reqwest::header;
 use std::collections::HashMap;
-use reqwest::{header};
 
 use super::client::Kucoin;
-use super::utils::{format_query};
 use super::error::APIError;
-use super::model::{APIData, APIDatum, Method, Pagination};
 use super::model::trade::{
-    OrderResp, 
-    CancelResp,
-    CancelByClientOidResp, 
-    OrderInfo,
-    HistoricalOrder,
-    FillsInfo,
+    CancelByClientOidResp, CancelResp, FillsInfo, HistoricalOrder, OrderInfo, OrderResp,
 };
+use super::model::{APIData, APIDatum, Method, Pagination};
+use super::utils::format_query;
 
 impl Kucoin {
-
     /// Places a limit order. Takes required inputs directly and a Some<OrderOptionals> type, or None for
     /// optional inputs. See OrderOptionals for build pattern usage to simplify generating optional params.
-    pub async fn post_limit_order(&self, 
-        client_oid: &str, 
-        symbol: &str, 
+    pub async fn post_limit_order(
+        &self,
+        client_oid: &str,
+        symbol: &str,
         side: &str,
         price: f32,
         size: f32,
-        optionals: Option<OrderOptionals<'_>>) 
-    -> Result<APIDatum<OrderResp>, APIError> {
+        optionals: Option<OrderOptionals<'_>>,
+    ) -> Result<APIDatum<OrderResp>, APIError> {
         let endpoint = String::from("/api/v1/orders");
         let url = format!("{}{}", &self.prefix, endpoint);
         let mut params: HashMap<String, String> = HashMap::new();
@@ -38,8 +33,12 @@ impl Kucoin {
             let opts = parse_order(opt);
             params.extend(opts);
         };
-        let headers: header::HeaderMap = self.sign_headers(endpoint, Some(&params), None, Method::POST).unwrap();
-        let resp = self.post(url, Some(headers), Some(params)).await?
+        let headers: header::HeaderMap = self
+            .sign_headers(endpoint, Some(&params), None, Method::POST)
+            .unwrap();
+        let resp = self
+            .post(url, Some(headers), Some(params))
+            .await?
             .json()
             .await?;
         Ok(resp)
@@ -47,17 +46,18 @@ impl Kucoin {
 
     /// Places a market order. Takes required inputs directly and a Some<OrderOptionals> type, or None for
     /// optional inputs. See OrderOptionals for build pattern usage to simplify generating optional params.
-    /// 
+    ///
     /// Note that size is the amount in the base currency and funds is the amount in quote currency. Users
     /// should only use one or the other the order will fail. One of the two is a required parameter.
-    pub async fn post_market_order(&self,
+    pub async fn post_market_order(
+        &self,
         client_oid: &str,
         symbol: &str,
         side: &str,
         size: Option<f32>,
         funds: Option<f32>,
-        optionals: Option<OrderOptionals<'_>>)
-    -> Result<APIDatum<OrderResp>, APIError> {
+        optionals: Option<OrderOptionals<'_>>,
+    ) -> Result<APIDatum<OrderResp>, APIError> {
         let endpoint = String::from("/api/v1/orders");
         let url = format!("{}{}", &self.prefix, endpoint);
         let mut params: HashMap<String, String> = HashMap::new();
@@ -75,8 +75,12 @@ impl Kucoin {
             let opts = parse_order(opt);
             params.extend(opts);
         };
-        let headers: header::HeaderMap = self.sign_headers(endpoint, Some(&params), None, Method::POST).unwrap();
-        let resp = self.post(url, Some(headers), Some(params)).await?
+        let headers: header::HeaderMap = self
+            .sign_headers(endpoint, Some(&params), None, Method::POST)
+            .unwrap();
+        let resp = self
+            .post(url, Some(headers), Some(params))
+            .await?
             .json()
             .await?;
         Ok(resp)
@@ -86,29 +90,33 @@ impl Kucoin {
     pub async fn cancel_order(&self, order_id: &str) -> Result<APIDatum<CancelResp>, APIError> {
         let endpoint = format!("/api/v1/orders/{}", order_id);
         let url = format!("{}{}", &self.prefix, endpoint);
-        let headers: header::HeaderMap = self.sign_headers(endpoint, None, None, Method::DELETE).unwrap();
-        let resp = self.delete(url, Some(headers)).await?
-            .json()
-            .await?;
+        let headers: header::HeaderMap = self
+            .sign_headers(endpoint, None, None, Method::DELETE)
+            .unwrap();
+        let resp = self.delete(url, Some(headers)).await?.json().await?;
         Ok(resp)
     }
 
     /// Cancels an order based on the provided order id (required).
-    pub async fn cancel_order_by_client_oid(&self, client_oid: &str) -> Result<APIDatum<CancelByClientOidResp>, APIError> {
+    pub async fn cancel_order_by_client_oid(
+        &self,
+        client_oid: &str,
+    ) -> Result<APIDatum<CancelByClientOidResp>, APIError> {
         let endpoint = format!("/api/v1/order/client-order/{}", client_oid);
         let url = format!("{}{}", &self.prefix, endpoint);
-        let headers: header::HeaderMap = self.sign_headers(endpoint, None, None, Method::DELETE).unwrap();
-        let resp = self.delete(url, Some(headers)).await?
-            .json()
-            .await?;
+        let headers: header::HeaderMap = self
+            .sign_headers(endpoint, None, None, Method::DELETE)
+            .unwrap();
+        let resp = self.delete(url, Some(headers)).await?.json().await?;
         Ok(resp)
     }
 
-    // Cancels all orders of a given symbol (optional) or trade type (optional). 
-    pub async fn cancel_all_orders(&self, 
-        symbol: Option<&str>, 
-        trade_type: Option<&str>) 
-        -> Result<APIDatum<CancelResp>, APIError> {
+    // Cancels all orders of a given symbol (optional) or trade type (optional).
+    pub async fn cancel_all_orders(
+        &self,
+        symbol: Option<&str>,
+        trade_type: Option<&str>,
+    ) -> Result<APIDatum<CancelResp>, APIError> {
         let endpoint = String::from("/api/v1/orders");
         let url: String;
         let headers: header::HeaderMap;
@@ -122,21 +130,24 @@ impl Kucoin {
         if !params.is_empty() {
             let query = format_query(&params);
             url = format!("{}{}{}", &self.prefix, endpoint, query);
-            headers = self.sign_headers(endpoint, Some(&params), None, Method::DELETE).unwrap();
+            headers = self
+                .sign_headers(endpoint, Some(&params), None, Method::DELETE)
+                .unwrap();
         } else {
             url = format!("{}{}", &self.prefix, endpoint);
-            headers = self.sign_headers(endpoint, None, None, Method::DELETE).unwrap();
+            headers = self
+                .sign_headers(endpoint, None, None, Method::DELETE)
+                .unwrap();
         };
-        let resp = self.delete(url, Some(headers)).await?
-            .json()
-            .await?;
+        let resp = self.delete(url, Some(headers)).await?.json().await?;
         Ok(resp)
     }
 
     // Consider list orders
-    pub async fn get_orders(&self, 
-        optionals: Option<OrderInfoOptionals<'_>>) 
-    -> Result<APIDatum<Pagination<OrderInfo>>, APIError> {
+    pub async fn get_orders(
+        &self,
+        optionals: Option<OrderInfoOptionals<'_>>,
+    ) -> Result<APIDatum<Pagination<OrderInfo>>, APIError> {
         let endpoint = String::from("/api/v1/orders");
         let url: String;
         let headers: header::HeaderMap;
@@ -173,25 +184,28 @@ impl Kucoin {
         if !params.is_empty() {
             let query = format_query(&params);
             url = format!("{}{}{}", &self.prefix, endpoint, query);
-            headers = self.sign_headers(endpoint, None, Some(query), Method::GET).unwrap();
+            headers = self
+                .sign_headers(endpoint, None, Some(query), Method::GET)
+                .unwrap();
         } else {
             url = format!("{}{}", &self.prefix, endpoint);
-            headers = self.sign_headers(endpoint, None, None, Method::GET).unwrap();
+            headers = self
+                .sign_headers(endpoint, None, None, Method::GET)
+                .unwrap();
         }
-        let resp = self.get(url, Some(headers)).await?
-            .json()
-            .await?;
+        let resp = self.get(url, Some(headers)).await?.json().await?;
         Ok(resp)
     }
 
-     pub async fn get_v1_historical_orders(&self, 
+    pub async fn get_v1_historical_orders(
+        &self,
         symbol: Option<&str>,
         start_at: Option<i64>,
         end_at: Option<i64>,
         side: Option<&str>,
         current_page: Option<i32>,
-        page_size: Option<i32>) 
-    -> Result<APIDatum<Pagination<HistoricalOrder>>, APIError> {
+        page_size: Option<i32>,
+    ) -> Result<APIDatum<Pagination<HistoricalOrder>>, APIError> {
         let endpoint = String::from("/api/v1/orders");
         let url: String;
         let headers: header::HeaderMap;
@@ -213,44 +227,47 @@ impl Kucoin {
         };
         if let Some(o) = side {
             params.insert("side".to_string(), o.to_string());
-        };   
+        };
         if !params.is_empty() {
             let query = format_query(&params);
             url = format!("{}{}{}", &self.prefix, endpoint, query);
-            headers = self.sign_headers(endpoint, None, Some(query), Method::GET).unwrap();
+            headers = self
+                .sign_headers(endpoint, None, Some(query), Method::GET)
+                .unwrap();
         } else {
             url = format!("{}{}", &self.prefix, endpoint);
-            headers = self.sign_headers(endpoint, None, None, Method::GET).unwrap();
+            headers = self
+                .sign_headers(endpoint, None, None, Method::GET)
+                .unwrap();
         }
-        let resp = self.get(url, Some(headers)).await?
-            .json()
-            .await?;
+        let resp = self.get(url, Some(headers)).await?.json().await?;
         Ok(resp)
     }
 
     pub async fn get_recent_orders(&self) -> Result<APIData<OrderInfo>, APIError> {
         let endpoint = String::from("/api/v1/limit/orders");
         let url = format!("{}{}", &self.prefix, endpoint);
-        let headers: header::HeaderMap = self.sign_headers(endpoint, None, None, Method::GET).unwrap();
-        let resp = self.get(url, Some(headers)).await?
-            .json()
-            .await?;
+        let headers: header::HeaderMap = self
+            .sign_headers(endpoint, None, None, Method::GET)
+            .unwrap();
+        let resp = self.get(url, Some(headers)).await?.json().await?;
         Ok(resp)
     }
 
     pub async fn get_order(&self, order_id: &str) -> Result<APIDatum<OrderInfo>, APIError> {
         let endpoint = format!("/api/v1/orders/{}", order_id);
         let url = format!("{}{}", &self.prefix, endpoint);
-        let headers: header::HeaderMap = self.sign_headers(endpoint, None, None, Method::GET).unwrap();
-        let resp = self.get(url, Some(headers)).await?
-            .json()
-            .await?;
+        let headers: header::HeaderMap = self
+            .sign_headers(endpoint, None, None, Method::GET)
+            .unwrap();
+        let resp = self.get(url, Some(headers)).await?.json().await?;
         Ok(resp)
     }
 
-    pub async fn get_fills(&self, 
-        optionals: Option<FillsOptionals<'_>>) 
-    -> Result<APIDatum<Pagination<FillsInfo>>, APIError> {
+    pub async fn get_fills(
+        &self,
+        optionals: Option<FillsOptionals<'_>>,
+    ) -> Result<APIDatum<Pagination<FillsInfo>>, APIError> {
         let endpoint = String::from("/api/v1/fills");
         let url: String;
         let headers: header::HeaderMap;
@@ -287,30 +304,31 @@ impl Kucoin {
         if !params.is_empty() {
             let query = format_query(&params);
             url = format!("{}{}{}", &self.prefix, endpoint, query);
-            headers = self.sign_headers(endpoint, None, Some(query), Method::GET).unwrap();
+            headers = self
+                .sign_headers(endpoint, None, Some(query), Method::GET)
+                .unwrap();
         } else {
             url = format!("{}{}", &self.prefix, endpoint);
-            headers = self.sign_headers(endpoint, None, None, Method::GET).unwrap();
+            headers = self
+                .sign_headers(endpoint, None, None, Method::GET)
+                .unwrap();
         };
-        let resp = self.get(url, Some(headers)).await?
-            .json()
-            .await?;
+        let resp = self.get(url, Some(headers)).await?.json().await?;
         Ok(resp)
     }
 
     pub async fn get_recent_fills(&self) -> Result<APIData<FillsInfo>, APIError> {
         let endpoint = String::from("/api/v1/limit/fills");
         let url = format!("{}{}", &self.prefix, endpoint);
-        let headers = self.sign_headers(endpoint, None, None, Method::GET).unwrap();
-        let resp = self.get(url, Some(headers)).await?
-            .json()
-            .await?;
+        let headers = self
+            .sign_headers(endpoint, None, None, Method::GET)
+            .unwrap();
+        let resp = self.get(url, Some(headers)).await?.json().await?;
         Ok(resp)
     }
 }
 
 fn parse_order(optionals: OrderOptionals) -> HashMap<String, String> {
-    
     let mut params: HashMap<String, String> = HashMap::new();
 
     if let Some(o) = optionals.remark {
@@ -345,10 +363,10 @@ fn parse_order(optionals: OrderOptionals) -> HashMap<String, String> {
 }
 
 /// OrderOptionals contains a builder pattern that can be used to more easily take advantage of optional inputs.
-/// 
-/// Example: 
+///
+/// Example:
 /// ``` rust
-/// use kucoin_rs::kucoin::trade::OrderOptionals; 
+/// use kucoin_rs::kucoin::trade::OrderOptionals;
 ///
 ///     let options = OrderOptionals::new()
 ///         .remark("Example of OrderOptionals builder pattern")
@@ -356,7 +374,7 @@ fn parse_order(optionals: OrderOptionals) -> HashMap<String, String> {
 ///         .hidden(true)
 ///         .build();
 /// ```
-/// 
+///
 /// See the Kucoin documentation for full list of options relative to market and limit orders.
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct OrderOptionals<'a> {
@@ -375,7 +393,7 @@ pub struct OrderOptionals<'a> {
 
 #[allow(dead_code)]
 /// Generates new empty OrderOptionals struct ready for building.
-impl <'a> OrderOptionals<'a> {
+impl<'a> OrderOptionals<'a> {
     pub fn new() -> Self {
         OrderOptionals {
             remark: None,
@@ -449,7 +467,7 @@ impl <'a> OrderOptionals<'a> {
 
     /// Builds an OrderOptional Type from chained optional funtions
     /// to be used with posting orders. Only contains optional inputs
-    /// the post order functions require specific required inputs. 
+    /// the post order functions require specific required inputs.
     /// See those functions' documentation for details.
     pub fn build(&self) -> Self {
         Self {
@@ -469,20 +487,20 @@ impl <'a> OrderOptionals<'a> {
 }
 
 /// OrderInfoOptionals contains a builder pattern that can be used to more easily take advantage of optional inputs.
-/// 
-/// Example: 
+///
+/// Example:
 /// ``` rust
-/// use kucoin_rs::kucoin::trade::OrderInfoOptionals; 
-/// 
+/// use kucoin_rs::kucoin::trade::OrderInfoOptionals;
+///
 ///     let options = OrderInfoOptionals::new()
 ///         .symbol("BTC-USDT")
 ///         .side("buy")
 ///         .build();
 /// ```
-/// 
+///
 /// See the Kucoin documentation for full list of options relative to market and limit orders.
 #[derive(Debug, Clone, PartialEq, Default)]
-pub struct OrderInfoOptionals<'a> { 
+pub struct OrderInfoOptionals<'a> {
     pub status: Option<&'a str>,
     pub symbol: Option<&'a str>,
     pub side: Option<&'a str>,
@@ -491,10 +509,10 @@ pub struct OrderInfoOptionals<'a> {
     pub start_at: Option<i64>,
     pub end_at: Option<i64>,
     pub current_page: Option<i32>,
-    pub page_size: Option<i32>
+    pub page_size: Option<i32>,
 }
 
-impl <'a> OrderInfoOptionals<'a> {
+impl<'a> OrderInfoOptionals<'a> {
     pub fn new() -> Self {
         OrderInfoOptionals {
             status: None,
@@ -556,9 +574,9 @@ impl <'a> OrderInfoOptionals<'a> {
 
     /// Builds an OrderInfoOptional Type from chained optional funtions
     /// to be used with getting lists of orders. Only contains optional inputs
-    /// the post order functions require specific required inputs. 
+    /// the post order functions require specific required inputs.
     /// See the function's documentation for details.
-    pub fn build(&self) -> Self { 
+    pub fn build(&self) -> Self {
         OrderInfoOptionals {
             status: self.status,
             symbol: self.symbol,
@@ -574,19 +592,19 @@ impl <'a> OrderInfoOptionals<'a> {
 }
 
 /// FillsOptionals contains a builder pattern that can be used to more easily take advantage of optional inputs.
-/// 
-/// Example: 
+///
+/// Example:
 /// ``` rust
-/// use kucoin_rs::kucoin::trade::FillsOptionals; 
+/// use kucoin_rs::kucoin::trade::FillsOptionals;
 ///     let options = FillsOptionals::new()
 ///         .symbol("BTC-USDT")
 ///         .side("buy")
 ///         .build();
 /// ```
-/// 
+///
 /// See the Kucoin documentation for full list of options relative to market and limit orders.
 #[derive(Debug, Clone, PartialEq, Default)]
-pub struct FillsOptionals<'a> { 
+pub struct FillsOptionals<'a> {
     pub order_id: Option<&'a str>,
     pub symbol: Option<&'a str>,
     pub side: Option<&'a str>,
@@ -595,10 +613,10 @@ pub struct FillsOptionals<'a> {
     pub end_at: Option<i64>,
     pub trade_type: Option<&'a str>,
     pub current_page: Option<i32>,
-    pub page_size: Option<i32>
+    pub page_size: Option<i32>,
 }
 
-impl <'a> FillsOptionals<'a> {
+impl<'a> FillsOptionals<'a> {
     pub fn new() -> Self {
         FillsOptionals {
             order_id: None,
@@ -618,7 +636,7 @@ impl <'a> FillsOptionals<'a> {
         self
     }
 
-     pub fn symbol(&mut self, s: &'a str) -> &mut Self {
+    pub fn symbol(&mut self, s: &'a str) -> &mut Self {
         self.symbol = Some(s);
         self
     }
@@ -660,9 +678,9 @@ impl <'a> FillsOptionals<'a> {
 
     /// Builds an FillsOptional Type from chained optional funtions
     /// to be used with getting lists of fills. Only contains optional inputs
-    /// the post order functions require specific required inputs. 
+    /// the post order functions require specific required inputs.
     /// See the function's documentation for details.
-    pub fn build(&self) -> Self { 
+    pub fn build(&self) -> Self {
         FillsOptionals {
             order_id: self.order_id,
             symbol: self.symbol,
@@ -679,7 +697,7 @@ impl <'a> FillsOptionals<'a> {
 
 #[cfg(test)]
 mod test {
-    use crate::kucoin::trade::{OrderOptionals, OrderInfoOptionals, FillsOptionals};
+    use crate::kucoin::trade::{FillsOptionals, OrderInfoOptionals, OrderOptionals};
     #[test]
     fn use_build_pattern_all_order_optionals() {
         let options = OrderOptionals {
@@ -709,7 +727,7 @@ mod test {
             .iceberg(false)
             .visible_size("1.23")
             .build();
-        
+
         assert_eq!(builder_options, options)
     }
 
@@ -737,13 +755,13 @@ mod test {
             .cancel_after(1_231_231_321_321)
             .post_only(true)
             .build();
-        
+
         assert_eq!(builder_options, options)
     }
 
     #[test]
     fn use_build_pattern_all_order_info_optionals() {
-         let options = OrderInfoOptionals {
+        let options = OrderInfoOptionals {
             status: Some("active"),
             symbol: Some("BTC-USDT"),
             side: Some("buy"),
@@ -772,7 +790,7 @@ mod test {
 
     #[test]
     fn use_build_pattern_some_order_info_optionals() {
-         let options = OrderInfoOptionals {
+        let options = OrderInfoOptionals {
             status: None,
             symbol: Some("BTC-USDT"),
             side: None,
@@ -795,7 +813,7 @@ mod test {
 
     #[test]
     fn use_build_pattern_all_fills_optionals() {
-         let options = FillsOptionals {
+        let options = FillsOptionals {
             order_id: Some("asdasd-sadasda-asxsaxs"),
             symbol: Some("BTC-USDT"),
             side: Some("buy"),
@@ -824,7 +842,7 @@ mod test {
 
     #[test]
     fn use_build_pattern_some_fills_optionals() {
-         let options = FillsOptionals {
+        let options = FillsOptionals {
             order_id: None,
             symbol: Some("BTC-USDT"),
             side: None,

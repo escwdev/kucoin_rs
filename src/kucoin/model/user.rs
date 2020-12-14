@@ -15,7 +15,7 @@ pub struct AccountId {
 pub enum AccountType {
     Main,
     Trade,
-    Margin
+    Margin,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -143,7 +143,7 @@ pub struct WithdrawalList {
     pub memo: String,
     pub currency: String,
     pub amount: f32,
-    pub fee: f32, 
+    pub fee: f32,
     pub wallet_tx_id: String,
     pub is_inner: bool,
     pub status: String,

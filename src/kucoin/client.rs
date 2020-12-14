@@ -1,17 +1,17 @@
+use reqwest;
 use std::collections::HashMap;
 use std::time::Duration;
-use reqwest;
 
-use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
-use serde_json::json;
-use hmac::{Hmac, Mac};
-use sha2::Sha256;
 use base64::encode;
 use failure;
+use hmac::{Hmac, Mac};
+use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
+use serde_json::json;
+use sha2::Sha256;
 
 use super::error::APIError;
-use super::utils::get_time;
 use super::model::Method;
+use super::utils::get_time;
 
 // Alias for HMAC-SHA256
 type HmacSha256 = Hmac<Sha256>;
@@ -25,7 +25,7 @@ pub struct Credentials {
 
 impl Credentials {
     pub fn new(api_key: &str, secret_key: &str, passphrase: &str) -> Self {
-        Credentials{
+        Credentials {
             api_key: api_key.to_string(),
             secret_key: secret_key.to_string(),
             passphrase: passphrase.to_string(),
@@ -48,7 +48,10 @@ pub struct Kucoin {
 }
 
 impl Kucoin {
-    pub fn new(environment: KucoinEnv, credentials: Option<Credentials>) -> Result<Self, failure::Error> {
+    pub fn new(
+        environment: KucoinEnv,
+        credentials: Option<Credentials>,
+    ) -> Result<Self, failure::Error> {
         let client = reqwest::Client::builder()
             .use_rustls_tls()
             .timeout(Duration::from_secs(60))
@@ -67,20 +70,21 @@ impl Kucoin {
 
     // Generic get request for internal library use.
     // Matches credentials for signed vs. unsigned API calls
-    pub async fn get(&self, url: String, sign: Option<HeaderMap>) -> Result<reqwest::Response, APIError> {
+    pub async fn get(
+        &self,
+        url: String,
+        sign: Option<HeaderMap>,
+    ) -> Result<reqwest::Response, APIError> {
         let req_url = reqwest::Url::parse(&url).unwrap();
         match sign {
             Some(sign) => {
-                let resp = self.client.get(req_url)
-                    .headers(sign)
-                    .send()
-                    .await?;
+                let resp = self.client.get(req_url).headers(sign).send().await?;
                 if resp.status().is_success() {
                     Ok(resp)
                 } else {
                     Ok(resp)
                 }
-            },
+            }
             None => {
                 let resp = self.client.get(req_url).send().await?;
                 if resp.status().is_success() {
@@ -92,15 +96,18 @@ impl Kucoin {
         }
     }
 
-    pub async fn post(&self, 
-        url: String, 
-        sign: Option<HeaderMap>, 
-        params: Option<HashMap<String, String>>) 
-    -> Result<reqwest::Response, APIError> {
+    pub async fn post(
+        &self,
+        url: String,
+        sign: Option<HeaderMap>,
+        params: Option<HashMap<String, String>>,
+    ) -> Result<reqwest::Response, APIError> {
         let req_url = reqwest::Url::parse(&url).unwrap();
         if let Some(s) = sign {
             if let Some(p) = params {
-                let resp = self.client.post(req_url)
+                let resp = self
+                    .client
+                    .post(req_url)
                     .headers(s)
                     .json(&json!(p))
                     .send()
@@ -111,11 +118,8 @@ impl Kucoin {
                     Ok(resp)
                 }
             } else {
-                let resp = self.client.post(req_url)
-                    .headers(s)
-                    .send()
-                    .await?;
-                 if resp.status().is_success() {
+                let resp = self.client.post(req_url).headers(s).send().await?;
+                if resp.status().is_success() {
                     Ok(resp)
                 } else if resp.status().is_server_error() {
                     Ok(resp)
@@ -128,16 +132,14 @@ impl Kucoin {
         }
     }
 
-    pub async fn delete(&self, 
-        url: String, 
-        sign: Option<HeaderMap>)
-    -> Result<reqwest::Response, APIError> {
+    pub async fn delete(
+        &self,
+        url: String,
+        sign: Option<HeaderMap>,
+    ) -> Result<reqwest::Response, APIError> {
         let req_url = reqwest::Url::parse(&url).unwrap();
         if let Some(s) = sign {
-            let resp = self.client.delete(req_url)
-                .headers(s)
-                .send()
-                .await?;
+            let resp = self.client.delete(req_url).headers(s).send().await?;
             if resp.status().is_success() {
                 Ok(resp)
             } else if resp.status().is_server_error() {
@@ -150,12 +152,13 @@ impl Kucoin {
         }
     }
 
-    pub fn sign_headers(&self, 
-        endpoint: String, 
-        params: Option<&HashMap<String, String>>, 
+    pub fn sign_headers(
+        &self,
+        endpoint: String,
+        params: Option<&HashMap<String, String>>,
         query: Option<String>,
-        method: Method) 
-    -> Result<HeaderMap, failure::Error> {
+        method: Method,
+    ) -> Result<HeaderMap, failure::Error> {
         let mut headers = HeaderMap::new();
         let nonce = get_time().to_string();
         let mut api_key: &str = "";
@@ -167,49 +170,61 @@ impl Kucoin {
                 api_key = &c.api_key;
                 secret_key = &c.secret_key;
                 passphrase = &c.passphrase;
-            },
+            }
             None => (),
         }
         match method {
-            Method::GET => { 
+            Method::GET => {
                 let meth = "GET";
                 if let Some(q) = query {
                     // let query = format_query(&p);
                     str_to_sign = format!("{}{}{}{}", nonce, meth, endpoint, q);
                 } else {
-                    str_to_sign = format!("{}{}{}", nonce, meth, endpoint)  
+                    str_to_sign = format!("{}{}{}", nonce, meth, endpoint)
                 }
-            },
+            }
             Method::POST => {
                 let meth = "POST";
                 if let Some(p) = params {
                     let q = json!(&p);
                     str_to_sign = format!("{}{}{}{}", nonce, meth, endpoint, q);
                 } else {
-                    str_to_sign = format!("{}{}{}", nonce, meth, endpoint) 
+                    str_to_sign = format!("{}{}{}", nonce, meth, endpoint)
                 }
-            },
-            Method::PUT => {},
+            }
+            Method::PUT => {}
             Method::DELETE => {
                 let meth = "DELETE";
                 if let Some(q) = query {
                     // let query = format_query(&p);
                     str_to_sign = format!("{}{}{}{}", nonce, meth, endpoint, q);
                 } else {
-                    str_to_sign = format!("{}{}{}", nonce, meth, endpoint)  
+                    str_to_sign = format!("{}{}{}", nonce, meth, endpoint)
                 }
             }
         }
-        let mut mac = HmacSha256::new_varkey(secret_key.as_bytes())
-            .expect("HMAC can take key of any size");
+        let mut mac =
+            HmacSha256::new_varkey(secret_key.as_bytes()).expect("HMAC can take key of any size");
         mac.input(str_to_sign.as_bytes());
         let result = mac.result();
         let code_bytes = result.code();
         let digest = encode(&code_bytes);
-        headers.insert(HeaderName::from_static("kc-api-key"), HeaderValue::from_str(&api_key).unwrap());
-        headers.insert(HeaderName::from_static("kc-api-sign"), HeaderValue::from_str(&digest).unwrap());
-        headers.insert(HeaderName::from_static("kc-api-timestamp"), HeaderValue::from_str(&nonce).unwrap());
-        headers.insert(HeaderName::from_static("kc-api-passphrase"), HeaderValue::from_str(&passphrase).unwrap());
+        headers.insert(
+            HeaderName::from_static("kc-api-key"),
+            HeaderValue::from_str(&api_key).unwrap(),
+        );
+        headers.insert(
+            HeaderName::from_static("kc-api-sign"),
+            HeaderValue::from_str(&digest).unwrap(),
+        );
+        headers.insert(
+            HeaderName::from_static("kc-api-timestamp"),
+            HeaderValue::from_str(&nonce).unwrap(),
+        );
+        headers.insert(
+            HeaderName::from_static("kc-api-passphrase"),
+            HeaderValue::from_str(&passphrase).unwrap(),
+        );
         Ok(headers)
     }
 }

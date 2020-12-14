@@ -33,7 +33,7 @@ pub struct Ticker {
 #[serde(rename_all = "camelCase")]
 pub struct AllTickers {
     pub time: i64,
-    pub ticker: Vec<Tick>
+    pub ticker: Vec<Tick>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -173,5 +173,5 @@ pub enum Fiat {
     PKR,
     SEK,
     NZD,
-    UAH
+    UAH,
 }
