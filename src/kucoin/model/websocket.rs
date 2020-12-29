@@ -434,6 +434,7 @@ pub struct TradeOpen {
     pub order_time: i64,
     pub size: String,
     pub filled_size: String,
+    #[serde(default)]
     pub price: String,
     #[serde(default)]
     pub client_oid: String,
@@ -454,6 +455,7 @@ pub struct TradeMatch {
     pub order_time: i64,
     pub size: String,
     pub filled_size: String,
+    #[serde(default)]
     pub price: String,
     pub match_price: String,
     pub match_size: String,
@@ -476,6 +478,7 @@ pub struct TradeFilled {
     pub order_time: i64,
     pub size: String,
     pub filled_size: String,
+    #[serde(default)]
     pub price: String,
     #[serde(default)]
     pub client_oid: String,
@@ -495,6 +498,7 @@ pub struct TradeCanceled {
     pub order_time: i64,
     pub size: String,
     pub filled_size: String,
+    #[serde(default)]
     pub price: String,
     #[serde(default)]
     pub client_oid: String,
@@ -515,6 +519,7 @@ pub struct TradeUpdate {
     pub order_time: i64,
     pub size: String,
     pub filled_size: String,
+    #[serde(default)]
     pub price: String,
     #[serde(default)]
     pub client_oid: String,
