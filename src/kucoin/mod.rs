@@ -1,12 +1,12 @@
 /// Main Kucoin API Client w/ All Endpoints
 pub mod client;
-pub mod market;
-pub mod user;
-pub mod trade;
+pub mod error;
 pub mod margin;
-pub mod websocket;
+pub mod market;
 /// API Response Strucs
 pub mod model;
+pub mod trade;
+pub mod user;
 /// Utility Functions
 pub mod utils;
-pub mod error;
+pub mod websocket;

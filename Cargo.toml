@@ -1,32 +1,32 @@
 [package]
-name = "kucoin_rs"
-version = "0.2.10"
 authors = ["Eric Abrahams <eric@halgo.ca>"]
-edition = "2018"
 description = "Rust async library for the Kucoin API"
-keywords = ["kucoin", "cyptocurrency", "trading", "algotrading", "async"]
-homepage="https://github.com/esvwdev/kucoin_rs"
-repository="https://github.com/escwdev/kucoin_rs"
 documentation = "https://docs.rs/crate/kucoin_rs"
+edition = "2018"
+homepage = "https://github.com/esvwdev/kucoin_rs"
+keywords = ["kucoin", "cyptocurrency", "trading", "algotrading", "async"]
 license = "MIT"
+name = "kucoin_rs"
 readme = "README.md"
+repository = "https://github.com/escwdev/kucoin_rs"
+version = "0.2.10"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-reqwest = { version = "0.10.4", features = ["json", "rustls-tls"] }
-tokio = { version = "0.2.13", features = ["full"] }
-tokio-tls = "0.3.0"
-tokio-tungstenite = { version = "0.10.1", features = ["tls"] }
-tungstenite = "0.10.1"
-futures = "0.3.4"
-pin-project = "0.4"
-streamunordered = "0.5"
-url = "2.1.1"
-failure = "0.1.7"
-hmac = "0.7.1"
-sha2 = "0.8.1"
 base64 = "0.12.0"
+failure = "0.1.7"
+futures = "0.3.4"
+hmac = "0.7.1"
+pin-project = "0.4"
+reqwest = {version = "0.10.4", features = ["json", "rustls-tls"]}
 serde = "1.0.104"
-serde_json = "1.0.48"
 serde_derive = "1.0.104"
+serde_json = "1.0.48"
+sha2 = "0.8.1"
+streamunordered = "0.5"
+tokio = {version = "0.2.13", features = ["full"]}
+tokio-tls = "0.3.0"
+tokio-tungstenite = {version = "0.10.1", features = ["tls"]}
+tungstenite = "0.10.1"
+url = "2.1.1"

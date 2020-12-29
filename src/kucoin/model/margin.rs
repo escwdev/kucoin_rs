@@ -52,7 +52,6 @@ pub struct BorrowOrder {
     pub status: String,
 }
 
-
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MatchList {
@@ -158,7 +157,7 @@ pub struct LendRecord {
     pub filled_size: String,
     pub accrued_interest: String,
     pub realized_profit: String,
-    pub is_auto_lend: bool
+    pub is_auto_lend: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize)]

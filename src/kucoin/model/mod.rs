@@ -1,24 +1,24 @@
 //! All Kucoin API endpoint response objects
-pub mod websocket;
-pub mod trade;
-pub mod market;
-pub mod user;
 pub mod margin;
+pub mod market;
+pub mod trade;
+pub mod user;
+pub mod websocket;
 
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct APIData <T> {
+pub struct APIData<T> {
     pub code: String,
     pub data: Option<Vec<T>>,
-    pub msg: Option<String>
+    pub msg: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct APIDatum <T> {
+pub struct APIDatum<T> {
     pub code: String,
     pub data: Option<T>,
-    pub msg: Option<String>
+    pub msg: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]

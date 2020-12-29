@@ -10,9 +10,7 @@ pub enum APIError {
     Other(String),
 }
 
-impl APIError {
-
-}
+impl APIError {}
 
 impl From<reqwest::Error> for APIError {
     fn from(err: reqwest::Error) -> Self {
