@@ -530,7 +530,7 @@ dependencies = [
  "streamunordered 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "tokio 1.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "tokio-native-tls 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "tokio-tungstenite 0.13.0 (git+https://github.com/snapview/tokio-tungstenite.git)",
+ "tokio-tungstenite 0.13.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "tungstenite 0.13.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "url 2.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -1192,7 +1192,7 @@ dependencies = [
 [[package]]
 name = "tokio-tungstenite"
 version = "0.13.0"
-source = "git+https://github.com/snapview/tokio-tungstenite.git#6bda35bf531d5da224d55d48f0b052c8d2208389"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "futures-util 0.3.12 (registry+https://github.com/rust-lang/crates.io-index)",
  "log 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1621,7 +1621,7 @@ dependencies = [
 "checksum tokio-macros 1.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "caf7b11a536f46a809a8a9f0bb4237020f70ecbf115b842360afb127ea2fda57"
 "checksum tokio-native-tls 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "f7d995660bd2b7f8c1568414c1126076c13fbb725c40112dc0120b78eb9b717b"
 "checksum tokio-rustls 0.22.0 (registry+https://github.com/rust-lang/crates.io-index)" = "bc6844de72e57df1980054b38be3a9f4702aba4858be64dd700181a8a6d0e1b6"
-"checksum tokio-tungstenite 0.13.0 (git+https://github.com/snapview/tokio-tungstenite.git)" = "<none>"
+"checksum tokio-tungstenite 0.13.0 (registry+https://github.com/rust-lang/crates.io-index)" = "e1a5f475f1b9d077ea1017ecbc60890fda8e54942d680ca0b1d2b47cfa2d861b"
 "checksum tokio-util 0.6.3 (registry+https://github.com/rust-lang/crates.io-index)" = "ebb7cb2f00c5ae8df755b252306272cd1790d39728363936e01827e11f0b017b"
 "checksum tower-service 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "e987b6bf443f4b5b3b6f38704195592cca41c5bb7aedd3c3693c7081f8289860"
 "checksum tracing 0.1.24 (registry+https://github.com/rust-lang/crates.io-index)" = "f77d3842f76ca899ff2dbcf231c5c65813dea431301d6eb686279c15c4464f12"
