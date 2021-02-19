@@ -9,24 +9,24 @@ license = "MIT"
 name = "kucoin_rs"
 readme = "README.md"
 repository = "https://github.com/escwdev/kucoin_rs"
-version = "0.2.11"
+version = "0.3.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 base64 = "0.12.0"
 failure = "0.1.7"
-futures = "0.3.4"
+futures = "0.3.9"
 hmac = "0.7.1"
-pin-project = "0.4"
-reqwest = {version = "0.10.4", features = ["json", "rustls-tls"]}
+pin-project = "1.0.5"
 serde = "1.0.104"
 serde_derive = "1.0.104"
 serde_json = "1.0.48"
 sha2 = "0.8.1"
 streamunordered = "0.5"
-tokio = {version = "0.2.13", features = ["full"]}
-tokio-tls = "0.3.0"
-tokio-tungstenite = {version = "0.10.1", features = ["tls"]}
-tungstenite = "0.10.1"
+reqwest = { version = "0.11.1", features = ["json", "rustls-tls"] }
+tokio = { version = "1.0.1", features = ["full"]}
+tokio-native-tls = "0.3.0"
+tokio-tungstenite = { git = "https://github.com/snapview/tokio-tungstenite.git", features = ["tls"] }
+tungstenite = "0.13.0"
 url = "2.1.1"

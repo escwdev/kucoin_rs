@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use futures::{prelude::*, stream::SplitStream};
+use futures::{prelude::*, stream::SplitStream, StreamExt};
 use pin_project::*;
 use reqwest::header;
 use std::time::Duration;
@@ -27,7 +27,7 @@ use super::model::{APIDatum, Method};
 use super::utils::get_time;
 
 type WSStream =
-    WebSocketStream<tokio_tungstenite::stream::Stream<TcpStream, tokio_tls::TlsStream<TcpStream>>>;
+    WebSocketStream<tokio_tungstenite::stream::Stream<TcpStream, tokio_native_tls::TlsStream<TcpStream>>>;
 pub type StoredStream = SplitStream<WSStream>;
 
 #[pin_project]
@@ -82,7 +82,7 @@ impl KucoinWebsocket {
         // Ping heartbeat
         tokio::spawn(async move {
             loop {
-                time::delay_for(Duration::from_secs(30)).await;
+                time::sleep(Duration::from_secs(30)).await;
                 let ping = DefaultMsg {
                     id: get_time().to_string(),
                     r#type: "ping".to_string(),
@@ -246,12 +246,12 @@ fn parse_message(msg: Message) -> Result<KucoinWebsocketMsg, APIError> {
                         &msg,
                     )?))
                 } else {
-                    serde::export::Err(APIError::Other(
+                    Err(APIError::Other(
                         "No KucoinWebSocketMsg type to parse".to_string(),
                     ))
                 }
             } else {
-                serde::export::Err(APIError::Other(
+                Err(APIError::Other(
                     "No KucoinWebSocketMsg type to parse".to_string(),
                 ))
             }
@@ -260,7 +260,7 @@ fn parse_message(msg: Message) -> Result<KucoinWebsocketMsg, APIError> {
         Message::Pong(..) => Ok(KucoinWebsocketMsg::Pong),
         Message::Ping(..) => Ok(KucoinWebsocketMsg::Ping),
         Message::Close(..) => {
-            serde::export::Err(APIError::Other("Socket closed error".to_string()))
+            Err(APIError::Other("Socket closed error".to_string()))
         }
     }
 }

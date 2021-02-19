@@ -229,7 +229,7 @@ pub extern crate futures;
 pub extern crate pin_project;
 pub extern crate reqwest;
 pub extern crate tokio;
-pub extern crate tokio_tls;
+pub extern crate tokio_native_tls;
 pub extern crate tokio_tungstenite;
 pub extern crate tungstenite;
 pub extern crate url;

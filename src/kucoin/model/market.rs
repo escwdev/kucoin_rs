@@ -70,11 +70,10 @@ pub struct DailyStats {
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct OrderBook {
-    // pub symbol: Option<String>,
-    pub sequence: String,
+    pub sequence: i64,
     pub time: i64,
-    pub bids: Vec<Vec<String>>,
-    pub asks: Vec<Vec<String>>,
+    pub bids: Vec<(String, String, String, i64)>,
+    pub asks: Vec<(String, String, String, i64)>,
 }
 
 pub enum OrderBookType {
