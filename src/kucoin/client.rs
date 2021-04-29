@@ -53,7 +53,7 @@ impl Kucoin {
         credentials: Option<Credentials>,
     ) -> Result<Self, failure::Error> {
         let client = reqwest::Client::builder()
-            .use_rustls_tls()
+            // .use_rustls_tls()
             .timeout(Duration::from_secs(60))
             .build()?;
         let prefix = match environment {
@@ -224,6 +224,10 @@ impl Kucoin {
         headers.insert(
             HeaderName::from_static("kc-api-passphrase"),
             HeaderValue::from_str(&passphrase).unwrap(),
+        );
+        headers.insert(
+            HeaderName::from_static("kc-api-key-version"),
+            HeaderValue::from_str("2").unwrap(),
         );
         Ok(headers)
     }

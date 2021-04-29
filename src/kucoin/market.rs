@@ -59,8 +59,8 @@ impl Kucoin {
         let endpoint = match amount {
             OrderBookType::L20 => format!("/api/v1/market/orderbook/level2_20?symbol={}", symbol),
             OrderBookType::L100 => format!("/api/v1/market/orderbook/level2_100?symbol={}", symbol),
-            OrderBookType::Full => format!("/api/v2/market/orderbook/level2?symbol={}", symbol),
-            OrderBookType::Level3 => format!("/api/v2/market/orderbook/level3?symbol={}", symbol),
+            OrderBookType::Full => format!("/api/v3/market/orderbook/level2?symbol={}", symbol),
+            OrderBookType::Level3 => format!("/api/v3/market/orderbook/level3?symbol={}", symbol),
         };
         let url = format!("{}{}", &self.prefix, endpoint);
         let resp: APIDatum<OrderBook> = self.get(url, None).await?.json().await?;

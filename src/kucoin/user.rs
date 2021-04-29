@@ -295,7 +295,7 @@ impl Kucoin {
         currency: &str,
         chain: Option<&str>,
     ) -> Result<APIDatum<DepositAddress>, APIError> {
-        let endpoint = String::from("/api/v1/deposit-addresses");
+        let endpoint = String::from("/api/v2/deposit-addresses");
         let mut params: HashMap<String, String> = HashMap::new();
         params.insert(String::from("currency"), currency.to_string());
         if let Some(c) = chain {
