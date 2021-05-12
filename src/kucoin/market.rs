@@ -1,12 +1,14 @@
 use std::collections::HashMap;
 
+use reqwest::header;
+
 use super::client::Kucoin;
 use super::error::APIError;
 use super::model::market::{
-    AllTickers, Chain, Currency, DailyStats, Klines, OrderBook, OrderBookType, SymbolList, Ticker,
-    TradeHistories,
+    AllTickers, Chain, Currency, DailyStats, Klines, OrderBook, AtomicOrderBook, OrderBookType, SymbolList, Ticker,
+    TradeHistories
 };
-use super::model::{APIData, APIDatum};
+use super::model::{APIData, APIDatum, Method};
 use super::utils::format_query;
 
 impl Kucoin {
@@ -60,10 +62,34 @@ impl Kucoin {
             OrderBookType::L20 => format!("/api/v1/market/orderbook/level2_20?symbol={}", symbol),
             OrderBookType::L100 => format!("/api/v1/market/orderbook/level2_100?symbol={}", symbol),
             OrderBookType::Full => format!("/api/v3/market/orderbook/level2?symbol={}", symbol),
-            OrderBookType::Level3 => format!("/api/v3/market/orderbook/level3?symbol={}", symbol),
         };
+        match amount {
+            OrderBookType::L20 | OrderBookType::L100 => {
+                let url = format!("{}{}", &self.prefix, endpoint);
+                let resp: APIDatum<OrderBook> = self.get(url, None).await?.json().await?;
+                return Ok(resp)
+            },
+            OrderBookType::Full => {
+                let url = format!("{}{}", &self.prefix, endpoint);
+                let headers: header::HeaderMap = self
+                    .sign_headers(endpoint, None, None, Method::GET)
+                    .unwrap();
+                let resp = self.get(url, Some(headers)).await?.json().await?;
+                return Ok(resp)
+            },
+        }
+    }
+
+    pub async fn get_atomic_orderbook(
+        &self,
+        symbol: &str,
+    ) -> Result<APIDatum<AtomicOrderBook>, APIError> {
+        let endpoint = format!("/api/v3/market/orderbook/level3?symbol={}", symbol);
         let url = format!("{}{}", &self.prefix, endpoint);
-        let resp: APIDatum<OrderBook> = self.get(url, None).await?.json().await?;
+        let headers: header::HeaderMap = self
+            .sign_headers(endpoint, None, None, Method::GET)
+            .unwrap();
+        let resp = self.get(url, Some(headers)).await?.json().await?;
         Ok(resp)
     }
 

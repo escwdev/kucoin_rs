@@ -70,6 +70,15 @@ pub struct DailyStats {
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct OrderBook {
+    pub sequence: String,
+    pub time: i64,
+    pub bids: Vec<Vec<String>>,
+    pub asks: Vec<Vec<String>>,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AtomicOrderBook {
     pub sequence: i64,
     pub time: i64,
     pub bids: Vec<(String, String, String, i64)>,
@@ -80,7 +89,6 @@ pub enum OrderBookType {
     L20,
     L100,
     Full,
-    Level3,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
