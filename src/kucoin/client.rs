@@ -203,19 +203,23 @@ impl Kucoin {
                 }
             }
         }
-        let mut mac =
-            HmacSha256::new_varkey(secret_key.as_bytes()).expect("HMAC can take key of any size");
-        mac.input(str_to_sign.as_bytes());
-        let result = mac.result();
-        let code_bytes = result.code();
-        let digest = encode(&code_bytes);
+        let mut hmac_sign = HmacSha256::new_varkey(secret_key.as_bytes()).expect("HMAC can take key of any size");
+        hmac_sign.input(str_to_sign.as_bytes());
+        let sign_result = hmac_sign.result();
+        let sign_bytes = sign_result.code();
+        let sign_digest = encode(&sign_bytes);
+        let mut hmac_passphrase = HmacSha256::new_varkey(secret_key.as_bytes()).expect("HMAC can take key of any size");
+        hmac_passphrase.input(passphrase.as_bytes());
+        let passphrase_result = hmac_passphrase.result();
+        let passphrase_bytes = passphrase_result.code();
+        let passphrase_digest = encode(&passphrase_bytes);
         headers.insert(
             HeaderName::from_static("kc-api-key"),
             HeaderValue::from_str(&api_key).unwrap(),
         );
         headers.insert(
             HeaderName::from_static("kc-api-sign"),
-            HeaderValue::from_str(&digest).unwrap(),
+            HeaderValue::from_str(&sign_digest).unwrap(),
         );
         headers.insert(
             HeaderName::from_static("kc-api-timestamp"),
@@ -223,12 +227,13 @@ impl Kucoin {
         );
         headers.insert(
             HeaderName::from_static("kc-api-passphrase"),
-            HeaderValue::from_str(&passphrase).unwrap(),
+            HeaderValue::from_str(&passphrase_digest).unwrap(),
         );
         headers.insert(
             HeaderName::from_static("kc-api-key-version"),
             HeaderValue::from_str("2").unwrap(),
         );
+        println!("{:?}", headers);
         Ok(headers)
     }
 }
