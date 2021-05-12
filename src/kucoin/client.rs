@@ -233,7 +233,6 @@ impl Kucoin {
             HeaderName::from_static("kc-api-key-version"),
             HeaderValue::from_str("2").unwrap(),
         );
-        println!("{:?}", headers);
         Ok(headers)
     }
 }
