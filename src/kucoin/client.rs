@@ -24,11 +24,11 @@ pub struct Credentials {
 }
 
 impl Credentials {
-    pub fn new(api_key: &str, secret_key: &str, passphrase: &str) -> Self {
+    pub fn new<S: Into<String>>(api_key: S, secret_key: S, passphrase: S) -> Self {
         Credentials {
-            api_key: api_key.to_string(),
-            secret_key: secret_key.to_string(),
-            passphrase: passphrase.to_string(),
+            api_key: api_key.into(),
+            secret_key: secret_key.into(),
+            passphrase: passphrase.into(),
         }
     }
 }
@@ -70,12 +70,12 @@ impl Kucoin {
 
     // Generic get request for internal library use.
     // Matches credentials for signed vs. unsigned API calls
-    pub async fn get(
+    pub async fn get<S: Into<String>>(
         &self,
-        url: String,
+        url: S,
         sign: Option<HeaderMap>,
     ) -> Result<reqwest::Response, APIError> {
-        let req_url = reqwest::Url::parse(&url).unwrap();
+        let req_url = reqwest::Url::parse(&url.into()).unwrap();
         match sign {
             Some(sign) => {
                 let resp = self.client.get(req_url).headers(sign).send().await?;
@@ -203,12 +203,14 @@ impl Kucoin {
                 }
             }
         }
-        let mut hmac_sign = HmacSha256::new_varkey(secret_key.as_bytes()).expect("HMAC can take key of any size");
+        let mut hmac_sign =
+            HmacSha256::new_varkey(secret_key.as_bytes()).expect("HMAC can take key of any size");
         hmac_sign.input(str_to_sign.as_bytes());
         let sign_result = hmac_sign.result();
         let sign_bytes = sign_result.code();
         let sign_digest = encode(&sign_bytes);
-        let mut hmac_passphrase = HmacSha256::new_varkey(secret_key.as_bytes()).expect("HMAC can take key of any size");
+        let mut hmac_passphrase =
+            HmacSha256::new_varkey(secret_key.as_bytes()).expect("HMAC can take key of any size");
         hmac_passphrase.input(passphrase.as_bytes());
         let passphrase_result = hmac_passphrase.result();
         let passphrase_bytes = passphrase_result.code();
