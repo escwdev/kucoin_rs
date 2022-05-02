@@ -26,8 +26,9 @@ use super::model::websocket::{
 use super::model::{APIDatum, Method};
 use super::utils::get_time;
 
-type WSStream =
-    WebSocketStream<tokio_tungstenite::stream::Stream<TcpStream, tokio_native_tls::TlsStream<TcpStream>>>;
+type WSStream = WebSocketStream<
+    tokio_tungstenite::stream::Stream<TcpStream, tokio_native_tls::TlsStream<TcpStream>>,
+>;
 pub type StoredStream = SplitStream<WSStream>;
 
 #[pin_project]
@@ -164,6 +165,10 @@ fn parse_message(msg: Message) -> Result<KucoinWebsocketMsg, APIError> {
                 Ok(KucoinWebsocketMsg::Level3ChangeMsg(serde_json::from_str(
                     &msg,
                 )?))
+            } else if msg.contains("\"subject\":\"level2\"") {
+                Ok(KucoinWebsocketMsg::OrderBookDepthMsg(serde_json::from_str(
+                    &msg,
+                )?))
             } else if msg.contains("\"subject\":\"received\"") {
                 Ok(KucoinWebsocketMsg::FullMatchReceivedMsg(
                     serde_json::from_str(&msg)?,
@@ -259,9 +264,7 @@ fn parse_message(msg: Message) -> Result<KucoinWebsocketMsg, APIError> {
         Message::Binary(b) => Ok(KucoinWebsocketMsg::Binary(b)),
         Message::Pong(..) => Ok(KucoinWebsocketMsg::Pong),
         Message::Ping(..) => Ok(KucoinWebsocketMsg::Ping),
-        Message::Close(..) => {
-            Err(APIError::Other("Socket closed error".to_string()))
-        }
+        Message::Close(..) => Err(APIError::Other("Socket closed error".to_string())),
     }
 }
 
@@ -342,6 +345,12 @@ impl Subscribe {
             WSTopic::OrderBook(ref symbols) => format!("/market/level2:{}", symbols.join(",")),
             WSTopic::OrderBookChange(ref symbols) => {
                 format!("/margin/fundingBook:{}", symbols.join(","))
+            }
+            WSTopic::OrderBookDepth5(ref symbols) => {
+                format!("/spotMarket/level2Depth5:{}", symbols.join(","))
+            }
+            WSTopic::OrderBookDepth50(ref symbols) => {
+                format!("/spotMarket/level2Depth50:{}", symbols.join(","))
             }
             WSTopic::Match(ref symbols) => format!("/market/match:{}", symbols.join(",")),
             WSTopic::Level3Public(ref symbols) => format!("/market/level3:{}", symbols.join(",")),
