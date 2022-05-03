@@ -23,6 +23,8 @@ pub enum WSTopic {
     AllTicker,
     Snapshot(String),
     OrderBook(Vec<String>),
+    OrderBookDepth5(Vec<String>),
+    OrderBookDepth50(Vec<String>),
     Match(Vec<String>),
     FullMatch(Vec<String>),
     Level3Public(Vec<String>),
@@ -63,6 +65,7 @@ pub enum KucoinWebsocketMsg {
     Level3MatchMsg(WSResp<Level3Match>),
     Level3DoneMsg(WSResp<Level3Done>),
     Level3ChangeMsg(WSResp<Level3Change>),
+    OrderBookDepthMsg(WSResp<Level2Depth>),
     FullMatchReceivedMsg(WSResp<FullMatchReceived>),
     FullMatchOpenMsg(WSResp<FullMatchOpen>),
     FullMatchDoneMsg(WSResp<FullMatchDone>),
@@ -162,6 +165,14 @@ pub struct Level2 {
     pub sequence_end: i64,
     pub symbol: String,
     pub changes: Level2Changes,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Level2Depth {
+    pub asks: Vec<Vec<String>>,
+    pub bids: Vec<Vec<String>>,
+    pub timestamp: u64,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
