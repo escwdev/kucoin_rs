@@ -857,9 +857,9 @@ dependencies = [
 
 [[package]]
 name = "quote"
-version = "1.0.2"
+version = "1.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "053a8c8bcc71fcce321828dc897a98ab9760bef03a4fc36693c231e5b3216cfe"
+checksum = "3dff9853339d4a5b75094c8edd65c3a0e81da8281855332d79559ddd8591b236"
 dependencies = [
  "proc-macro2",
 ]
