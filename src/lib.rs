@@ -77,12 +77,12 @@
 //! ```ignore
 //! extern crate kucoin_rs;
 //!
+//! use std::error::Error;
 //! use kucoin_rs::tokio;
-//! use kucoin_rs::failure;
 //! use kucoin_rs::kucoin::client::{Kucoin, Credentials, KucoinEnv};
 //!
 //! #[tokio::main]
-//! async fn main() -> Result<(), failure::Error>  {
+//! async fn main() -> Result<(), Box<dyn Error>>  {
 //!     let api = Kucoin::new(KucoinEnv::Sandbox, None)?;
 //!     let result = api.get_ticker("BTC-USDT").await?;
 //!     match result.data {
@@ -99,12 +99,12 @@
 //! extern crate kucoin_rs;
 //!
 //! use kucoin_rs::tokio;
-//! use kucoin_rs::failure;
+//! use std::error::Error;
 //! use kucoin_rs::kucoin::client::{Kucoin, Credentials, KucoinEnv};
 //! use kucoin_rs::kucoin::error::APIError;
 //!
 //! #[tokio::main]
-//! async fn main() -> Result<(), failure::Error>  {
+//! async fn main() -> Result<(), Box<dyn Error>>  {
 //!    let result = api.get_server_time().await;
 //!    match result {
 //!        Err(e) => {
@@ -136,14 +136,14 @@
 //! extern crate kucoin_rs;
 //!
 //! use kucoin_rs::tokio;
-//! use kucoin_rs::failure;
+//! use std::error::Error;
 //! use kucoin_rs::tokio::stream::StreamExt;
 //!
 //! use kucoin_rs::kucoin::client::{Kucoin, Credentials, KucoinEnv};
 //! use kucoin_rs::kucoin::model::websocket::{Subscribe, KucoinWebsocketMsg, WSType, WSTopic, WSResp};
 //!
 //! #[tokio::main]
-//! async fn main() -> Result<(), failure::Error>  {
+//! async fn main() -> Result<(), Box<dyn Error>>  {
 //!     // If credentials are needed, generate a new Credentials struct w/ the necessary keys
 //!     let credentials = Credentials::new(
 //!         "xxxxxxxxxxxxxXXXXXXxxx",
@@ -239,8 +239,6 @@ pub extern crate serde_json;
 
 #[macro_use]
 pub extern crate serde_derive;
-#[macro_use]
-pub extern crate failure;
 
 /// Kucoin API Module
 pub mod kucoin;

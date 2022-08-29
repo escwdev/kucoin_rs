@@ -14,19 +14,19 @@ version = "0.4.4"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-base64 = "0.12.0"
-failure = "0.1.7"
+base64 = "0.13"
 futures = "0.3.9"
-hmac = "0.7.1"
+hmac = "0.12"
 pin-project = "1.0.5"
 serde = "1.0.104"
 serde_derive = "1.0.104"
 serde_json = "1.0.48"
-sha2 = "0.8.1"
+sha2 = "0.10"
 streamunordered = "0.5"
 reqwest = { version = "0.11.1", features = ["json", "rustls-tls"] }
-tokio = { version = "1.0.1", features = ["full"]}
+thiserror = "1.0"
+tokio = { version = "1.0.1", features = ["full"] }
 tokio-native-tls = "0.3.0"
-tokio-tungstenite = { version = "0.13.0", features = ["tls"] }
-tungstenite = "0.13.0"
+tokio-tungstenite = { version = "0.17", features = ["native-tls"] }
+tungstenite = "0.17"
 url = "2.1.1"

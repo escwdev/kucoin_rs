@@ -8,10 +8,9 @@ use streamunordered::{StreamUnordered, StreamYield};
 use tokio::net::TcpStream;
 use tokio::sync::Mutex;
 use tokio::time;
-use tokio_tungstenite::{connect_async, tungstenite::Message, WebSocketStream};
+use tokio_tungstenite::{connect_async, tungstenite::Message, MaybeTlsStream, WebSocketStream};
 use url::Url;
 
-use failure;
 use serde_json;
 use std::{
     pin::Pin,
@@ -26,9 +25,7 @@ use super::model::websocket::{
 use super::model::{APIDatum, Method};
 use super::utils::get_time;
 
-type WSStream = WebSocketStream<
-    tokio_tungstenite::stream::Stream<TcpStream, tokio_native_tls::TlsStream<TcpStream>>,
->;
+type WSStream = WebSocketStream<MaybeTlsStream<TcpStream>>;
 pub type StoredStream = SplitStream<WSStream>;
 
 #[pin_project]
@@ -98,10 +95,10 @@ impl KucoinWebsocket {
                 if let Err(e) = resp {
                     match e {
                         APIError::Websocket(e) => {
-                            format_err!("Error sending Ping: {}", e);
+                            println!("Error sending Ping: {}", e);
                             break;
                         }
-                        _ => format_err!("None websocket error sending Ping: {}", e),
+                        _ => println!("None websocket error sending Ping: {}", e),
                     };
                 };
             }
@@ -264,13 +261,14 @@ fn parse_message(msg: Message) -> Result<KucoinWebsocketMsg, APIError> {
         Message::Binary(b) => Ok(KucoinWebsocketMsg::Binary(b)),
         Message::Pong(..) => Ok(KucoinWebsocketMsg::Pong),
         Message::Ping(..) => Ok(KucoinWebsocketMsg::Ping),
-        Message::Close(..) => Err(APIError::Other("Socket closed error".to_string())),
+        Message::Close(..) => Err(APIError::Other("Socket closed error".into())),
+        Message::Frame(..) => Err(APIError::Other("Frame message not handled".into())),
     }
 }
 
 pub async fn close_socket(
     heartbeat: &mut tokio::task::JoinHandle<()>,
-) -> Result<(), failure::Error> {
+) -> Result<(), Box<dyn std::error::Error>> {
     heartbeat.await?;
     Ok(())
 }
