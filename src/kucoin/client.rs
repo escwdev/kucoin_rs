@@ -3,7 +3,6 @@ use std::collections::HashMap;
 use std::time::Duration;
 
 use base64::encode;
-use failure;
 use hmac::{Hmac, Mac};
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
 use serde_json::json;
@@ -42,16 +41,12 @@ pub enum KucoinEnv {
 #[derive(Debug, Clone)]
 pub struct Kucoin {
     credentials: Option<Credentials>,
-    environment: KucoinEnv,
     pub prefix: String,
     pub client: reqwest::Client,
 }
 
 impl Kucoin {
-    pub fn new(
-        environment: KucoinEnv,
-        credentials: Option<Credentials>,
-    ) -> Result<Self, failure::Error> {
+    pub fn new(environment: KucoinEnv, credentials: Option<Credentials>) -> Result<Self, APIError> {
         let client = reqwest::Client::builder()
             // .use_rustls_tls()
             .timeout(Duration::from_secs(60))
@@ -62,7 +57,6 @@ impl Kucoin {
         };
         Ok(Kucoin {
             credentials,
-            environment,
             prefix,
             client,
         })
@@ -158,7 +152,7 @@ impl Kucoin {
         params: Option<&HashMap<String, String>>,
         query: Option<String>,
         method: Method,
-    ) -> Result<HeaderMap, failure::Error> {
+    ) -> Result<HeaderMap, APIError> {
         let mut headers = HeaderMap::new();
         let nonce = get_time().to_string();
         let mut api_key: &str = "";
@@ -203,15 +197,15 @@ impl Kucoin {
                 }
             }
         }
-        let mut hmac_sign = HmacSha256::new_varkey(secret_key.as_bytes()).expect("HMAC can take key of any size");
-        hmac_sign.input(str_to_sign.as_bytes());
-        let sign_result = hmac_sign.result();
-        let sign_bytes = sign_result.code();
+        let mut hmac_sign = HmacSha256::new_from_slice(secret_key.as_bytes())
+            .expect("HMAC can take key of any size");
+        hmac_sign.update(str_to_sign.as_bytes());
+        let sign_bytes = hmac_sign.finalize().into_bytes();
         let sign_digest = encode(&sign_bytes);
-        let mut hmac_passphrase = HmacSha256::new_varkey(secret_key.as_bytes()).expect("HMAC can take key of any size");
-        hmac_passphrase.input(passphrase.as_bytes());
-        let passphrase_result = hmac_passphrase.result();
-        let passphrase_bytes = passphrase_result.code();
+        let mut hmac_passphrase = HmacSha256::new_from_slice(secret_key.as_bytes())
+            .expect("HMAC can take key of any size");
+        hmac_passphrase.update(passphrase.as_bytes());
+        let passphrase_bytes = hmac_passphrase.finalize().into_bytes();
         let passphrase_digest = encode(&passphrase_bytes);
         headers.insert(
             HeaderName::from_static("kc-api-key"),
