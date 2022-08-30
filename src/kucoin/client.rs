@@ -46,10 +46,7 @@ pub struct Kucoin {
 }
 
 impl Kucoin {
-    pub fn new(
-        environment: KucoinEnv,
-        credentials: Option<Credentials>,
-    ) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn new(environment: KucoinEnv, credentials: Option<Credentials>) -> Result<Self, APIError> {
         let client = reqwest::Client::builder()
             // .use_rustls_tls()
             .timeout(Duration::from_secs(60))
@@ -155,7 +152,7 @@ impl Kucoin {
         params: Option<&HashMap<String, String>>,
         query: Option<String>,
         method: Method,
-    ) -> Result<HeaderMap, Box<dyn std::error::Error>> {
+    ) -> Result<HeaderMap, APIError> {
         let mut headers = HeaderMap::new();
         let nonce = get_time().to_string();
         let mut api_key: &str = "";

@@ -10,4 +10,6 @@ pub enum APIError {
     HTTP(#[from] reqwest::Error),
     #[error("Other issue {}", _0)]
     Other(String),
+    #[error("Tokio JoinError")]
+    JoinError(#[from] tokio::task::JoinError),
 }

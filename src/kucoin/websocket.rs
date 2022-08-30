@@ -268,7 +268,7 @@ fn parse_message(msg: Message) -> Result<KucoinWebsocketMsg, APIError> {
 
 pub async fn close_socket(
     heartbeat: &mut tokio::task::JoinHandle<()>,
-) -> Result<(), Box<dyn std::error::Error>> {
+) -> Result<(), APIError> {
     heartbeat.await?;
     Ok(())
 }
