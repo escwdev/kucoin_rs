@@ -107,7 +107,7 @@ impl KucoinWebsocket {
             }
         });
 
-        let token = self.streams.push(read);
+        let token = self.streams.insert(read);
         self.subscriptions.insert(ws_topic[0].clone(), token);
         self.tokens.insert(token, ws_topic[0].clone());
 
