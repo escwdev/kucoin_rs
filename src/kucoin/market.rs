@@ -16,7 +16,8 @@ impl Kucoin {
         &self,
         market: Option<&str>,
     ) -> Result<APIData<SymbolList>, APIError> {
-        let endpoint = String::from("/api/v1/symbols");
+        // V1 is deprecated already
+        let endpoint = String::from("/api/v2/symbols");
         let url = match market {
             Some(m) => format!("{}{}?market={}", &self.prefix, endpoint, m),
             None => format!("{}{}", &self.prefix, endpoint),

@@ -64,7 +64,12 @@ impl Stream for KucoinWebsocket {
 
 impl KucoinWebsocket {
     pub async fn subscribe(&mut self, url: String, ws_topic: Vec<WSTopic>) -> Result<(), APIError> {
-        let endpoint = Url::parse(&url).unwrap();
+        let endpoint = Url::parse(&url);
+        if endpoint.is_err() {
+            return Err(APIError::Other("invalid url".to_string()));
+        }
+        let endpoint = endpoint.unwrap();
+
         let (ws_stream, _) = connect_async(endpoint).await?;
 
         let (sink, read) = ws_stream.split();
@@ -282,12 +287,14 @@ impl Kucoin {
 
     pub async fn ws_bullet_private(&self) -> Result<APIDatum<InstanceServers>, APIError> {
         let endpoint = String::from("/api/v1/bullet-private");
+
         let url: String = format!("{}{}", &self.prefix, endpoint);
         let header: header::HeaderMap = self
             .sign_headers(endpoint, None, None, Method::POST)
             .unwrap();
         let resp = self.post(url, Some(header), None).await?;
         let api_data: APIDatum<InstanceServers> = resp.json().await?;
+        // println!("ws_bullet_private api:\n{api_data:#?}");
         Ok(api_data)
     }
 
@@ -308,19 +315,28 @@ impl Kucoin {
         let timestamp = get_time();
         match ws_type {
             WSType::Private => {
-                let resp = &self.ws_bullet_private().await?;
-                if let Some(r) = &resp.data {
+                let resp = self.ws_bullet_private().await?;
+                if let Some(r) = resp.data {
                     token = r.token.to_owned();
                     endpoint = r.instance_servers[0].endpoint.to_owned();
+                } else {
+                    let message = resp.msg.unwrap_or("no data or message".to_string());
+                    return Err(APIError::Other(message));
                 }
             }
             WSType::Public => {
-                let resp = &self.ws_bullet_public().await?;
+                let resp = self.ws_bullet_public().await?;
                 if let Some(r) = &resp.data {
                     token = r.token.to_owned();
                     endpoint = r.instance_servers[0].endpoint.to_owned();
+                } else {
+                    let message = resp.msg.unwrap_or("no data or message".to_string());
+                    return Err(APIError::Other(message));
                 }
             }
+        }
+        if endpoint == "" || token == "" {
+            return Err(APIError::Other("Missing endpoint/token".to_string()));
         }
         let url = format!(
             "{}?token={}&[connectId={}]?acceptUserMessage=\"true\"",
