@@ -42,7 +42,6 @@ pub enum KucoinEnv {
 #[derive(Debug, Clone)]
 pub struct Kucoin {
     credentials: Option<Credentials>,
-    environment: KucoinEnv,
     pub prefix: String,
     pub client: reqwest::Client,
 }
@@ -62,7 +61,6 @@ impl Kucoin {
         };
         Ok(Kucoin {
             credentials,
-            environment,
             prefix,
             client,
         })
