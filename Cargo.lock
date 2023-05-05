@@ -609,7 +609,7 @@ dependencies = [
 
 [[package]]
 name = "kucoin_rs"
-version = "0.4.4"
+version = "0.4.5"
 dependencies = [
  "base64 0.12.3",
  "failure",

@@ -310,8 +310,8 @@ impl Kucoin {
     }
 
     pub async fn get_socket_endpoint(&self, ws_type: WSType) -> Result<String, APIError> {
-        let mut endpoint: String = String::new();
-        let mut token: String = String::new();
+        let endpoint: String;
+        let token: String;
         let timestamp = get_time();
         match ws_type {
             WSType::Private => {
