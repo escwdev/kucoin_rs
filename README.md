@@ -1,7 +1,6 @@
 # kucoin_api
 
-kucoin_api is an open source library SDK/API wrapper for the 
-[Kucoin Cryptocurrency Exchange](https://www.kucoin.com/).
+kucoin_api is an API wrapper for the [Kucoin Cryptocurrency Exchange](https://www.kucoin.com/). This is a derived project from Eric Abrahams's [kucoin_rs](https://github.com/escwdev/kucoin_rs).
 
 Trading cryptocurrencies is high risk and there are no guarentees towards the stability or effectiveness
 of this project. Comments, contributions, stars and donations are, however, all welcome.
@@ -47,18 +46,6 @@ A non-authorized client can be used for accessing Public Endpoints by inputting 
 
 Contributions are more than welcome for fixing bugs, writing further documentation, writing further tests, 
 adding features or helping to improve performance. I'll do my best to review and implement pull requests.
-
-## Donations
-
-Donations are always appreciated and help support development of more open source trading tools.
-
-BTC: 3KvTuAnv7o2VAf4LGgg1MiDURd2DgjFGaa
-
-ETH: 0x7713a223e0e86355ac02b1e0de77695e822071cf
-
-NEO: AWngpjmoXPHiJH6rtf81brPiyPomYAqe8j
-
-Contact me for any other specific cryptocurrencies you'd prefer to use.
 
 ## License
 
