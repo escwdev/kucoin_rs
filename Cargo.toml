@@ -1,14 +1,14 @@
 [package]
-authors = ["Eric Abrahams <eric@halgo.ca>"]
-description = "Rust async library for the Kucoin API"
-documentation = "https://docs.rs/crate/kucoin_rs"
+authors = ["Eric Abrahams <eric@halgo.ca>", "Sho Kaneko <kanekoshoyu@gmail.com>"]
+description = "Async Kucoin API"
+documentation = "https://docs.rs/crate/kucoin_api"
 edition = "2018"
-homepage = "https://github.com/esvwdev/kucoin_rs"
+homepage = "https://github.com/kanekoshoyu/kucoin_api"
 keywords = ["kucoin", "cyptocurrency", "trading", "algotrading", "async"]
 license = "MIT"
-name = "kucoin_rs"
+name = "kucoin_api"
 readme = "README.md"
-repository = "https://github.com/escwdev/kucoin_rs"
+repository = "https://github.com/kanekoshoyu/kucoin_api"
 version = "0.4.5"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -30,4 +30,3 @@ tokio-native-tls = "0.3.0"
 tokio-tungstenite = { version = "0.13.0", features = ["tls"] }
 tungstenite = "0.13.0"
 url = "2.1.1"
-#

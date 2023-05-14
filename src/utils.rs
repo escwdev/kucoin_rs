@@ -26,7 +26,7 @@ pub fn format_query<S: ::std::hash::BuildHasher>(params: &HashMap<String, String
 
 #[cfg(test)]
 mod test {
-    use crate::kucoin::utils::format_query;
+    use crate::utils::format_query;
     use std::collections::HashMap;
     #[test]
     fn format_query_test() {

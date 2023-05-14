@@ -1,13 +1,13 @@
-//! # kucoin_rs
-//! kucoin_rs is an open source library SDK/API wrapper for the
-//! [Kucoin Cryptocurrency Exchange](https://www.kucoin.com/).
+//! # kucoin_api
+//! kucoin_api is an open source library API wrapper for the
+//! [Kucoin Cryptocurrency Exchange](https://www.kucoin.com/). It is derived from Eric Abraham's kucoin_rs. 
 //!
 //! Trading cryptocurrencies is high risk and there are no guarentees towards the stability or effectiveness
 //! of this project. Comments, contributions, stars and donations are, however, all welcome.
 //!
 //! ## Description
 //!
-//! kucoin_rs supports all currently available Kucoin REST and Websocket endpoints. It is designed to be
+//! kucoin_api supports all currently available Kucoin REST and Websocket endpoints. It is designed to be
 //! async and relies primarily on the tokio async runtime, reqwest for the HTTP layer and tokio_tungstenite
 //! for the Websocket layer.
 //!
@@ -16,15 +16,6 @@
 //! Please be aware that due to the nature of a number of endpoints, the response structs and input parameters of
 //! several requests may contain Option\<T\> and will require appropriate pattern matching. These generally coincide
 //! with optional input params which can be seen by visiting the official Kucoin API documentation noted above.
-//!
-//! See the Kucoin Client for all endpoint fn calls and required/optional input types, and endpoint models for specifics: <br />
-//! * [`Kucoin Client`](./kucoin/client/struct.Kucoin.html)
-//! * [`API General Response Models`](./kucoin/model/index.html)                  
-//! * [`Market Response Models`](./kucoin/model/market/index.html)
-//! * [`Margin Response Models`](./kucoin/model/margin/index.html)
-//! * [`Trade Response Models`](./kucoin/model/trade/index.html)        
-//! * [`User Response Models`](./kucoin/model/user/index.html)          
-//! * [`Websocket Response Models`](./kucoin/model/websocket/index.html)
 //!
 //! These project docs also provide details regarding necessary input parameters and response structs,
 //! helping to identify cases where Option\<T\> matching is and is not necessary.
@@ -42,7 +33,7 @@
 //! header construction but does require that the client is initialized with credentials to do so. To include credentials do the following:
 //!
 //! ```
-//! use kucoin_rs::kucoin::client::{Kucoin, Credentials, KucoinEnv};
+//! use kucoin_api::client::{Kucoin, Credentials, KucoinEnv};
 //!
 //! let credentials = Credentials::new(
 //!         "xxxxxxxxxxxxxXXXXXXxxx",           // API KEY
@@ -58,7 +49,7 @@
 //!
 //! Below are some basic examples.
 //!
-//! Private endpoints require an authorized client. Check above for further details on initializing kucoin_rs
+//! Private endpoints require an authorized client. Check above for further details on initializing kucoin_api
 //! with appropriate credentials to access private endpoints
 //!
 //! ### REST Usage
@@ -75,11 +66,11 @@
 //! A simple example is:
 //!
 //! ```ignore
-//! extern crate kucoin_rs;
+//! extern crate kucoin_api;
 //!
-//! use kucoin_rs::tokio;
-//! use kucoin_rs::failure;
-//! use kucoin_rs::kucoin::client::{Kucoin, Credentials, KucoinEnv};
+//! use kucoin_api::tokio;
+//! use kucoin_api::failure;
+//! use kucoin_api::client::{Kucoin, Credentials, KucoinEnv};
 //!
 //! #[tokio::main]
 //! async fn main() -> Result<(), failure::Error>  {
@@ -96,12 +87,12 @@
 //! An example with custom error handling is:
 //!
 //! ```ignore
-//! extern crate kucoin_rs;
+//! extern crate kucoin_api;
 //!
-//! use kucoin_rs::tokio;
-//! use kucoin_rs::failure;
-//! use kucoin_rs::kucoin::client::{Kucoin, Credentials, KucoinEnv};
-//! use kucoin_rs::kucoin::error::APIError;
+//! use kucoin_api::tokio;
+//! use kucoin_api::failure;
+//! use kucoin_api::client::{Kucoin, Credentials, KucoinEnv};
+//! use kucoin_api::error::APIError;
 //!
 //! #[tokio::main]
 //! async fn main() -> Result<(), failure::Error>  {
@@ -133,14 +124,14 @@
 //! short explanation including some basic options for specified error handling.
 //!
 //! ```ignore
-//! extern crate kucoin_rs;
+//! extern crate kucoin_api;
 //!
-//! use kucoin_rs::tokio;
-//! use kucoin_rs::failure;
-//! use kucoin_rs::tokio::stream::StreamExt;
+//! use kucoin_api::tokio;
+//! use kucoin_api::failure;
+//! use kucoin_api::tokio::stream::StreamExt;
 //!
-//! use kucoin_rs::kucoin::client::{Kucoin, Credentials, KucoinEnv};
-//! use kucoin_rs::kucoin::model::websocket::{Subscribe, KucoinWebsocketMsg, WSType, WSTopic, WSResp};
+//! use kucoin_api::client::{Kucoin, Credentials, KucoinEnv};
+//! use kucoin_api::model::websocket::{Subscribe, KucoinWebsocketMsg, WSType, WSTopic, WSResp};
 //!
 //! #[tokio::main]
 //! async fn main() -> Result<(), failure::Error>  {
@@ -198,7 +189,7 @@
 //!
 //! ## Error Handling
 //!
-//! kucoin_rs uses the [`failure crate`](https://crates.io/crates/failure) to propagate errors. Kucoin REST errors are
+//! kucoin_api uses the [`failure crate`](https://crates.io/crates/failure) to propagate errors. Kucoin REST errors are
 //! passed as part of the response structs, however by default, reqwest errors panic. For websocket endpoints, similarly,
 //! by default most protocol and connection errors will panic. Use of `?` will result in panics as well. End users can however  
 //! use the custom [`APIError`](./kucoin/error/enum.APIError.html) enum to match error responses which provide non panic
@@ -242,5 +233,15 @@ pub extern crate serde_derive;
 #[macro_use]
 pub extern crate failure;
 
-/// Kucoin API Module
-pub mod kucoin;
+/// Main Kucoin API Client w/ All Endpoints
+pub mod client;
+pub mod error;
+pub mod margin;
+pub mod market;
+/// API Response Strucs
+pub mod model;
+pub mod trade;
+pub mod user;
+/// Utility Functions
+pub mod utils;
+pub mod websocket;

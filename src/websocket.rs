@@ -18,13 +18,13 @@ use std::{
     task::{Context, Poll},
 };
 
-use super::client::Kucoin;
-use super::error::APIError;
-use super::model::websocket::{
+use crate::client::Kucoin;
+use crate::error::APIError;
+use crate::model::websocket::{
     DefaultMsg, InstanceServers, KucoinWebsocketMsg, Subscribe, WSTopic, WSType,
 };
-use super::model::{APIDatum, Method};
-use super::utils::get_time;
+use crate::model::{APIDatum, Method};
+use crate::utils::get_time;
 
 type WSStream = WebSocketStream<
     tokio_tungstenite::stream::Stream<TcpStream, tokio_native_tls::TlsStream<TcpStream>>,
