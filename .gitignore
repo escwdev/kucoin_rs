@@ -1,1 +1,4 @@
 /target
+.vscode/launch.json
+config.ini
+src/bin/*

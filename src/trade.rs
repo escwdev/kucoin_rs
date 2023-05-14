@@ -366,7 +366,7 @@ fn parse_order(optionals: OrderOptionals) -> HashMap<String, String> {
 ///
 /// Example:
 /// ``` rust
-/// use kucoin_rs::kucoin::trade::OrderOptionals;
+/// use kucoin_api::trade::OrderOptionals;
 ///
 ///     let options = OrderOptionals::new()
 ///         .remark("Example of OrderOptionals builder pattern")
@@ -490,7 +490,7 @@ impl<'a> OrderOptionals<'a> {
 ///
 /// Example:
 /// ``` rust
-/// use kucoin_rs::kucoin::trade::OrderInfoOptionals;
+/// use kucoin_api::trade::OrderInfoOptionals;
 ///
 ///     let options = OrderInfoOptionals::new()
 ///         .symbol("BTC-USDT")
@@ -595,7 +595,7 @@ impl<'a> OrderInfoOptionals<'a> {
 ///
 /// Example:
 /// ``` rust
-/// use kucoin_rs::kucoin::trade::FillsOptionals;
+/// use kucoin_api::trade::FillsOptionals;
 ///     let options = FillsOptionals::new()
 ///         .symbol("BTC-USDT")
 ///         .side("buy")
@@ -697,7 +697,7 @@ impl<'a> FillsOptionals<'a> {
 
 #[cfg(test)]
 mod test {
-    use crate::kucoin::trade::{FillsOptionals, OrderInfoOptionals, OrderOptionals};
+    use crate::trade::{FillsOptionals, OrderInfoOptionals, OrderOptionals};
     #[test]
     fn use_build_pattern_all_order_optionals() {
         let options = OrderOptionals {
