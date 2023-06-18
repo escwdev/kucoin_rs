@@ -81,6 +81,7 @@ pub enum KucoinWebsocketMsg {
     MarginTradeOpenMsg(WSResp<MarginTradeOpen>),
     MarginTradeUpdateMsg(WSResp<MarginTradeUpdate>),
     MarginTradeDoneMsg(WSResp<MarginTradeDone>),
+    TradeReceivedMsg(WSResp<TradeOpen>),
     TradeOpenMsg(WSResp<TradeOpen>),
     TradeMatchMsg(WSResp<TradeMatch>),
     TradeFilledMsg(WSResp<TradeFilled>),

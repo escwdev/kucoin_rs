@@ -77,19 +77,11 @@ impl Kucoin {
         match sign {
             Some(sign) => {
                 let resp = self.client.get(req_url).headers(sign).send().await?;
-                if resp.status().is_success() {
-                    Ok(resp)
-                } else {
-                    Ok(resp)
-                }
+                Ok(resp)
             }
             None => {
                 let resp = self.client.get(req_url).send().await?;
-                if resp.status().is_success() {
-                    Ok(resp)
-                } else {
-                    Ok(resp)
-                }
+                Ok(resp)
             }
         }
     }
@@ -110,20 +102,10 @@ impl Kucoin {
                     .json(&json!(p))
                     .send()
                     .await?;
-                if resp.status().is_success() {
-                    Ok(resp)
-                } else {
-                    Ok(resp)
-                }
+                Ok(resp)
             } else {
                 let resp = self.client.post(req_url).headers(s).send().await?;
-                if resp.status().is_success() {
-                    Ok(resp)
-                } else if resp.status().is_server_error() {
-                    Ok(resp)
-                } else {
-                    Ok(resp)
-                }
+                Ok(resp)
             }
         } else {
             panic!("Unsigned POST request...")
@@ -138,13 +120,7 @@ impl Kucoin {
         let req_url = reqwest::Url::parse(&url).unwrap();
         if let Some(s) = sign {
             let resp = self.client.delete(req_url).headers(s).send().await?;
-            if resp.status().is_success() {
-                Ok(resp)
-            } else if resp.status().is_server_error() {
-                Ok(resp)
-            } else {
-                Ok(resp)
-            }
+            Ok(resp)
         } else {
             panic!("Unsigned DELETE request...")
         }
@@ -201,19 +177,21 @@ impl Kucoin {
                 }
             }
         }
-        let mut hmac_sign = HmacSha256::new_varkey(secret_key.as_bytes()).expect("HMAC can take key of any size");
+        let mut hmac_sign =
+            HmacSha256::new_varkey(secret_key.as_bytes()).expect("HMAC can take key of any size");
         hmac_sign.input(str_to_sign.as_bytes());
         let sign_result = hmac_sign.result();
         let sign_bytes = sign_result.code();
-        let sign_digest = encode(&sign_bytes);
-        let mut hmac_passphrase = HmacSha256::new_varkey(secret_key.as_bytes()).expect("HMAC can take key of any size");
+        let sign_digest = encode(sign_bytes);
+        let mut hmac_passphrase =
+            HmacSha256::new_varkey(secret_key.as_bytes()).expect("HMAC can take key of any size");
         hmac_passphrase.input(passphrase.as_bytes());
         let passphrase_result = hmac_passphrase.result();
         let passphrase_bytes = passphrase_result.code();
-        let passphrase_digest = encode(&passphrase_bytes);
+        let passphrase_digest = encode(passphrase_bytes);
         headers.insert(
             HeaderName::from_static("kc-api-key"),
-            HeaderValue::from_str(&api_key).unwrap(),
+            HeaderValue::from_str(api_key).unwrap(),
         );
         headers.insert(
             HeaderName::from_static("kc-api-sign"),

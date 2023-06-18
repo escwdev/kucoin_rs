@@ -5,8 +5,8 @@ use reqwest::header;
 use super::client::Kucoin;
 use super::error::APIError;
 use super::model::market::{
-    AllTickers, Chain, Currency, DailyStats, Klines, OrderBook, AtomicOrderBook, OrderBookType, SymbolList, Ticker,
-    TradeHistories
+    AllTickers, AtomicOrderBook, Chain, Currency, DailyStats, Klines, OrderBook, OrderBookType,
+    SymbolList, Ticker, TradeHistories,
 };
 use super::model::{APIData, APIDatum, Method};
 use super::utils::format_query;
@@ -68,16 +68,16 @@ impl Kucoin {
             OrderBookType::L20 | OrderBookType::L100 => {
                 let url = format!("{}{}", &self.prefix, endpoint);
                 let resp: APIDatum<OrderBook> = self.get(url, None).await?.json().await?;
-                return Ok(resp)
-            },
+                Ok(resp)
+            }
             OrderBookType::Full => {
                 let url = format!("{}{}", &self.prefix, endpoint);
                 let headers: header::HeaderMap = self
                     .sign_headers(endpoint, None, None, Method::GET)
                     .unwrap();
                 let resp = self.get(url, Some(headers)).await?.json().await?;
-                return Ok(resp)
-            },
+                Ok(resp)
+            }
         }
     }
 
@@ -129,10 +129,10 @@ impl Kucoin {
         }
         endpoint.push_str(&format!("&symbol={}", symbol));
         if let Some(t) = start_at {
-            endpoint.push_str(&format!("&startAt={}", t.to_string()));
+            endpoint.push_str(&format!("&startAt={}", t));
         }
         if let Some(t) = end_at {
-            endpoint.push_str(&format!("&endAt={}", t.to_string()));
+            endpoint.push_str(&format!("&endAt={}", t));
         }
         let url = format!("{}{}", &self.prefix, endpoint);
         let resp = self.get(url, None).await?.json().await?;
@@ -171,19 +171,17 @@ impl Kucoin {
     ) -> Result<APIDatum<HashMap<String, String>>, APIError> {
         let endpoint = String::from("/api/v1/prices");
         let mut params: HashMap<String, String> = HashMap::new();
-        let url: String;
         if let Some(b) = base {
             params.insert(String::from("base"), b.to_string());
         }
         if let Some(c) = currencies {
             params.insert(String::from("currencies"), c.to_string());
         }
-        if !params.is_empty() {
-            let query = format_query(&params);
-            url = format!("{}{}{}", &self.prefix, endpoint, query);
+        let url: String = if !params.is_empty() {
+            format!("{}{}{}", &self.prefix, endpoint, format_query(&params))
         } else {
-            url = format!("{}{}", &self.prefix, endpoint);
-        }
+            format!("{}{}", &self.prefix, endpoint)
+        };
         let resp = self.get(url, None).await?.json().await?;
         Ok(resp)
     }

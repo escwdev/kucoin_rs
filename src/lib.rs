@@ -1,6 +1,6 @@
 //! # kucoin_api
 //! kucoin_api is an open source library API wrapper for the
-//! [Kucoin Cryptocurrency Exchange](https://www.kucoin.com/). It is derived from Eric Abraham's kucoin_rs. 
+//! [Kucoin Cryptocurrency Exchange](https://www.kucoin.com/). It is derived from Eric Abraham's kucoin_rs.
 //!
 //! Trading cryptocurrencies is high risk and there are no guarentees towards the stability or effectiveness
 //! of this project. Comments, contributions, stars and donations are, however, all welcome.
