@@ -47,12 +47,7 @@ impl Stream for KucoinWebsocket {
             Poll::Ready(Some((y, _))) => match y {
                 StreamYield::Item(item) => {
                     // let heartbeat = self.heartbeats.get_mut(&token).unwrap();
-                    Poll::Ready({
-                        Some(
-                            item.map_err(APIError::Websocket)
-                                .and_then(|m| parse_message(m)),
-                        )
-                    })
+                    Poll::Ready({ Some(item.map_err(APIError::Websocket).and_then(parse_message)) })
                 }
                 StreamYield::Finished(_) => Poll::Pending,
             },
@@ -324,7 +319,7 @@ impl Kucoin {
                     token = r.token.to_owned();
                     endpoint = r.instance_servers[0].endpoint.to_owned();
                 } else {
-                    let message = resp.msg.unwrap_or("no data or message".to_string());
+                    let message = resp.msg.unwrap_or_else(|| "no data or message".to_string());
                     return Err(APIError::Other(message));
                 }
             }
@@ -334,12 +329,12 @@ impl Kucoin {
                     token = r.token.to_owned();
                     endpoint = r.instance_servers[0].endpoint.to_owned();
                 } else {
-                    let message = resp.msg.unwrap_or("no data or message".to_string());
+                    let message = resp.msg.unwrap_or_else(|| "no data or message".to_string());
                     return Err(APIError::Other(message));
                 }
             }
         }
-        if endpoint == "" || token == "" {
+        if endpoint.is_empty() || token.is_empty() {
             return Err(APIError::Other("Missing endpoint/token".to_string()));
         }
         let url = format!(
