@@ -47,7 +47,9 @@ impl Stream for KucoinWebsocket {
             Poll::Ready(Some((y, _))) => match y {
                 StreamYield::Item(item) => {
                     // let heartbeat = self.heartbeats.get_mut(&token).unwrap();
-                    Poll::Ready({ Some(item.map_err(APIError::Websocket).and_then(parse_message)) })
+                    Poll::Ready(Some(
+                        item.map_err(APIError::Websocket).and_then(parse_message),
+                    ))
                 }
                 StreamYield::Finished(_) => Poll::Pending,
             },
