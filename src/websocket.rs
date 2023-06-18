@@ -234,8 +234,12 @@ fn parse_message(msg: Message) -> Result<KucoinWebsocketMsg, APIError> {
                 ))
             } else if msg.contains("error") {
                 Ok(KucoinWebsocketMsg::Error(msg))
-            } else if msg.contains("\"topic\":\"/spotMarket/tradeOrders\"") {
-                if msg.contains("\"type\":\"open\"") {
+            } else if msg.contains("\"topic\":\"/spotMarket/tradeOrdersV2\"") {
+                if msg.contains("\"type\":\"recevied\"") {
+                    Ok(KucoinWebsocketMsg::TradeReceivedMsg(serde_json::from_str(
+                        &msg,
+                    )?))
+                } else if msg.contains("\"type\":\"open\"") {
                     Ok(KucoinWebsocketMsg::TradeOpenMsg(serde_json::from_str(
                         &msg,
                     )?))
