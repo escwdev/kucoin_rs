@@ -231,39 +231,45 @@ fn parse_message(msg: Message) -> Result<KucoinWebsocketMsg, APIError> {
                 ))
             } else if msg.contains("error") {
                 Ok(KucoinWebsocketMsg::Error(msg))
-            } else if msg.contains("\"topic\":\"/spotMarket/tradeOrdersV2\"") {
-                if msg.contains("\"type\":\"recevied\"") {
-                    Ok(KucoinWebsocketMsg::TradeReceivedMsg(serde_json::from_str(
-                        &msg,
-                    )?))
+            } else if msg.contains("\"topic\":\"/spotMarket/tradeOrders") {
+                // This should support both TradeOrders and TradeOrdersV2
+                if msg.contains("\"type\":\"new\"") {
+                    Ok(KucoinWebsocketMsg::TradeNewMsg(
+                        serde_json::from_str(&msg).expect("TradeNewMsg serde fail"),
+                    ))
+                } else if msg.contains("\"type\":\"received\"") {
+                    Ok(KucoinWebsocketMsg::TradeReceivedMsg(
+                        serde_json::from_str(&msg).expect("TradeReceivedMsg serde fail"),
+                    ))
                 } else if msg.contains("\"type\":\"open\"") {
-                    Ok(KucoinWebsocketMsg::TradeOpenMsg(serde_json::from_str(
-                        &msg,
-                    )?))
+                    Ok(KucoinWebsocketMsg::TradeOpenMsg(
+                        serde_json::from_str(&msg).expect("TradeOpenMsg serde fail"),
+                    ))
                 } else if msg.contains("\"type\":\"match\"") {
-                    Ok(KucoinWebsocketMsg::TradeMatchMsg(serde_json::from_str(
-                        &msg,
-                    )?))
+                    Ok(KucoinWebsocketMsg::TradeMatchMsg(
+                        serde_json::from_str(&msg).expect("TradeMatchMsg serde fail"),
+                    ))
                 } else if msg.contains("\"type\":\"filled\"") {
-                    Ok(KucoinWebsocketMsg::TradeFilledMsg(serde_json::from_str(
-                        &msg,
-                    )?))
+                    Ok(KucoinWebsocketMsg::TradeFilledMsg(
+                        serde_json::from_str(&msg).expect("TradeFilledMsg serde fail"),
+                    ))
                 } else if msg.contains("\"type\":\"canceled\"") {
-                    Ok(KucoinWebsocketMsg::TradeCanceledMsg(serde_json::from_str(
-                        &msg,
-                    )?))
+                    Ok(KucoinWebsocketMsg::TradeCanceledMsg(
+                        serde_json::from_str(&msg).expect("TradeCanceledMsg serde fail"),
+                    ))
                 } else if msg.contains("\"type\":\"update\"") {
-                    Ok(KucoinWebsocketMsg::TradeUpdateMsg(serde_json::from_str(
-                        &msg,
-                    )?))
+                    Ok(KucoinWebsocketMsg::TradeUpdateMsg(
+                        serde_json::from_str(&msg).expect("TradeUpdateMsg serde fail"),
+                    ))
                 } else {
                     Err(APIError::Other(
-                        "No KucoinWebSocketMsg type to parse".to_string(),
+                        "Unrecognised message from tradeOrders\n".to_string()
+                            + &serde_json::to_string_pretty(&msg).unwrap(),
                     ))
                 }
             } else {
                 Err(APIError::Other(
-                    "No KucoinWebSocketMsg type to parse".to_string(),
+                    "No KucoinWebSocketMsg type to parse\n".to_string(),
                 ))
             }
         }
@@ -397,6 +403,10 @@ impl Subscribe {
                 format!("/margin/loan:{}", symbol)
             }
             WSTopic::TradeOrders => {
+                private_channel = true;
+                String::from("/spotMarket/tradeOrders")
+            }
+            WSTopic::TradeOrdersV2 => {
                 private_channel = true;
                 String::from("/spotMarket/tradeOrdersV2")
             }

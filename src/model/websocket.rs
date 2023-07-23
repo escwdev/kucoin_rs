@@ -38,6 +38,7 @@ pub enum WSTopic {
     PositionChange,
     MarginTradeOrder(String),
     TradeOrders,
+    TradeOrdersV2,
 }
 
 pub enum WSType {
@@ -45,6 +46,7 @@ pub enum WSType {
     Private,
 }
 
+// TODO Messages like TradeMsg can be nested so that we know the source of the trades
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[allow(clippy::large_enum_variant)]
 pub enum KucoinWebsocketMsg {
@@ -81,7 +83,8 @@ pub enum KucoinWebsocketMsg {
     MarginTradeOpenMsg(WSResp<MarginTradeOpen>),
     MarginTradeUpdateMsg(WSResp<MarginTradeUpdate>),
     MarginTradeDoneMsg(WSResp<MarginTradeDone>),
-    TradeReceivedMsg(WSResp<TradeOpen>),
+    TradeNewMsg(WSResp<TradeNew>),
+    TradeReceivedMsg(WSResp<TradeReceived>),
     TradeOpenMsg(WSResp<TradeOpen>),
     TradeMatchMsg(WSResp<TradeMatch>),
     TradeFilledMsg(WSResp<TradeFilled>),
@@ -432,6 +435,48 @@ pub struct MarginTradeDone {
     pub order_id: String,
     pub reason: String,
     pub side: String,
+    pub ts: i64,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TradeNew {
+    pub symbol: String,
+    pub order_type: String,
+    pub side: String,
+    pub liquidity: String,
+    pub r#type: String,
+    pub order_id: String,
+    pub order_time: i64,
+    pub size: String,
+    #[serde(default)]
+    pub price: String,
+    #[serde(default)]
+    pub client_oid: String,
+    pub remain_size: String,
+    pub status: String,
+    pub ts: i64,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TradeReceived {
+    pub symbol: String,
+    pub order_type: String,
+    pub side: String,
+    pub r#type: String,
+    pub order_id: String,
+    pub order_time: i64,
+    #[serde(default)]
+    pub size: String,
+    #[serde(default)]
+    pub price: String,
+    #[serde(default)]
+    pub client_oid: String,
+    pub origin_size: String,
+    #[serde(default)]
+    pub origin_funds: String,
+    pub status: String,
     pub ts: i64,
 }
 
