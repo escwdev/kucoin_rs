@@ -232,12 +232,8 @@ fn parse_message(msg: Message) -> Result<KucoinWebsocketMsg, APIError> {
             } else if msg.contains("error") {
                 Ok(KucoinWebsocketMsg::Error(msg))
             } else if msg.contains("\"topic\":\"/spotMarket/tradeOrders") {
-                // This should support both TradeOrders and TradeOrdersV2
-                if msg.contains("\"type\":\"new\"") {
-                    Ok(KucoinWebsocketMsg::TradeNewMsg(
-                        serde_json::from_str(&msg).expect("TradeNewMsg serde fail"),
-                    ))
-                } else if msg.contains("\"type\":\"received\"") {
+                // Supports both TradeOrders and TradeOrdersV2
+                if msg.contains("\"type\":\"received\"") {
                     Ok(KucoinWebsocketMsg::TradeReceivedMsg(
                         serde_json::from_str(&msg).expect("TradeReceivedMsg serde fail"),
                     ))

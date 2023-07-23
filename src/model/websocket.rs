@@ -83,7 +83,6 @@ pub enum KucoinWebsocketMsg {
     MarginTradeOpenMsg(WSResp<MarginTradeOpen>),
     MarginTradeUpdateMsg(WSResp<MarginTradeUpdate>),
     MarginTradeDoneMsg(WSResp<MarginTradeDone>),
-    TradeNewMsg(WSResp<TradeNew>),
     TradeReceivedMsg(WSResp<TradeReceived>),
     TradeOpenMsg(WSResp<TradeOpen>),
     TradeMatchMsg(WSResp<TradeMatch>),
@@ -435,26 +434,6 @@ pub struct MarginTradeDone {
     pub order_id: String,
     pub reason: String,
     pub side: String,
-    pub ts: i64,
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct TradeNew {
-    pub symbol: String,
-    pub order_type: String,
-    pub side: String,
-    pub liquidity: String,
-    pub r#type: String,
-    pub order_id: String,
-    pub order_time: i64,
-    pub size: String,
-    #[serde(default)]
-    pub price: String,
-    #[serde(default)]
-    pub client_oid: String,
-    pub remain_size: String,
-    pub status: String,
     pub ts: i64,
 }
 
